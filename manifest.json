@@ -1,19 +1,367 @@
-{
-  "id": "./",
-  "name": "PaceWeek — Seu treino. Seu ritmo. Sua semana.",
-  "short_name": "PaceWeek",
-  "description": "Seu aplicativo pessoal de corrida para planejar, executar e acompanhar os treinos da semana.",
-  "lang": "pt-BR",
-  "start_url": "./",
-  "scope": "./",
-  "display": "standalone",
-  "display_override": ["window-controls-overlay", "standalone"],
-  "orientation": "portrait-primary",
-  "background_color": "#07111f",
-  "theme_color": "#07111f",
-  "categories": ["health", "fitness", "sports"],
-  "icons": [
-    {"src":"icons/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
-    {"src":"icons/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
-  ]
-}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PaceWeek - Meus Treinos de Corrida</title>
+    
+    <!-- Configurações PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="PaceWeek">
+    <link rel="apple-touch-icon" href="https://images.unsplash.com/photo-1502224562085-639556652f99?w=192&h=192&fit=crop">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js para Gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0; padding: 0; width: 100vw; min-height: 100vh;
+        }
+        .bg-pace-runner {
+            background-image: linear-gradient(rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.95)), url('https://images.unsplash.com/photo-1502224562085-639556652f99?w=1200&auto=format&fit=crop&q=80');
+            background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed;
+        }
+    </style>
+</head>
+<body class="bg-pace-runner text-slate-100 flex flex-col min-h-screen pb-20">
+
+    <!-- Header Fixo com a Sua Imagem Oficial na Logo -->
+    <header class="w-full bg-slate-900/90 backdrop-blur-md border-b border-slate-700/60 px-4 py-2.5 sticky top-0 z-30 shadow-md">
+        <div class="w-full max-w-lg mx-auto flex justify-between items-center">
+            
+            <!-- LOGO COM A IMAGEM EXATA -->
+            <div class="flex items-center gap-2.5">
+                <div class="w-10 h-10 rounded-xl overflow-hidden border border-slate-700 shadow-md bg-slate-950 flex items-center justify-center">
+                    <img src="https://images.unsplash.com/photo-1502224562085-639556652f99?w=200&auto=format&fit=crop&q=80" alt="PaceWeek Logo" class="w-full h-full object-cover scale-125">
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-bold text-sm tracking-tight text-slate-100 leading-tight">Pace<span class="text-emerald-400">Week</span></span>
+                    <span class="text-[10px] text-slate-400 font-medium leading-none">Painel de Treinos</span>
+                </div>
+            </div>
+
+            <!-- Botão de Inserir Planilha Semanal -->
+            <div>
+                <button onclick="abrirModalSemana()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-3 py-2 rounded-xl shadow transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-calendar-plus"></i> Nova Semana
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navegação por Abas -->
+    <nav class="w-full max-w-lg mx-auto px-4 pt-3">
+        <div class="grid grid-cols-2 bg-slate-900/80 p-1 rounded-xl border border-slate-700/60 text-xs font-bold text-center">
+            <button onclick="mudarAba('treinos')" id="btnTabTreinos" class="py-2.5 rounded-lg bg-emerald-600 text-white transition shadow">Planilha & Agenda</button>
+            <button onclick="mudarAba('graficos')" id="btnTabGraficos" class="py-2.5 rounded-lg text-slate-400 hover:text-white transition">Painel de Desempenho</button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="w-full max-w-lg mx-auto p-4 flex-1 flex flex-col gap-4">
+
+        <!-- ABA 1: PLANILHA E CALENDÁRIO -->
+        <section id="abaTreinos" class="flex flex-col gap-4">
+            <div class="w-full bg-slate-900/85 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-slate-700/60">
+                <div class="flex justify-between items-center mb-3">
+                    <button onclick="mudarMes(-1)" class="p-2 text-slate-400 hover:text-white transition"><i class="fa-solid fa-chevron-left"></i></button>
+                    <h2 id="mesAnoTitulo" class="font-bold text-sm capitalize text-emerald-400"></h2>
+                    <button onclick="mudarMes(1)" class="p-2 text-slate-400 hover:text-white transition"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <div class="grid grid-cols-7 text-center text-[11px] font-semibold text-slate-400 mb-2">
+                    <span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span>
+                </div>
+                <div id="gradeDias" class="grid grid-cols-7 gap-1.5 text-center text-xs"></div>
+            </div>
+
+            <div class="w-full bg-slate-900/85 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-slate-700/60">
+                <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-list-check text-emerald-400"></i> Próximos 7 Dias de Treino
+                </h3>
+                <div id="resumoSemanaLista" class="space-y-2 text-xs"></div>
+            </div>
+        </section>
+
+        <!-- ABA 2: PAINEL DE DESEMPENHO -->
+        <section id="abaGraficos" class="hidden flex flex-col gap-4">
+            <div class="w-full bg-slate-900/85 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-slate-700/60 flex flex-col gap-3">
+                <h3 class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-chart-line"></i> Evolução de Pace (Ritmo)
+                </h3>
+                <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800">
+                    <canvas id="graficoPace"></canvas>
+                </div>
+            </div>
+
+            <div class="w-full bg-slate-900/85 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-slate-700/60 flex flex-col gap-3">
+                <h3 class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-stopwatch"></i> Histórico de Tempos Totais
+                </h3>
+                <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800">
+                    <canvas id="graficoTempo"></canvas>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal de Treino Diário -->
+    <div id="modalTreino" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 hidden items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-slate-900 border border-slate-700 w-full max-w-lg rounded-t-3xl sm:rounded-2xl p-5 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="modalTitulo" class="font-bold text-base text-emerald-400">Detalhes do Treino</h3>
+                <button onclick="fecharModal()" class="text-slate-400 hover:text-white p-2"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <input type="hidden" id="modalDataId">
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-[11px] font-semibold text-slate-400 uppercase mb-1">Descrição do Treino</label>
+                    <textarea id="modalDescricao" rows="3" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-xs text-slate-100 focus:outline-none focus:border-emerald-500" placeholder="Ex: 1km aq + 5x200m + 5x100m"></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-400 uppercase mb-1">Tempo Total (min)</label>
+                        <input type="text" id="modalTempo" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-xs text-slate-100" placeholder="Ex: 34:20">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-400 uppercase mb-1">Pace Médio (min/km)</label>
+                        <input type="text" id="modalPace" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-xs text-slate-100" placeholder="Ex: 5:35">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-semibold text-slate-400 uppercase mb-1">Sensações / Observações</label>
+                    <input type="text" id="modalObs" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-xs text-slate-100" placeholder="Ex: Ritmo forte">
+                </div>
+                <div class="flex items-center gap-3 py-2">
+                    <input type="checkbox" id="modalConcluido" class="w-5 h-5 accent-emerald-500 rounded cursor-pointer">
+                    <label for="modalConcluido" class="text-xs font-medium text-slate-200 cursor-pointer">Treino Concluído</label>
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button onclick="salvarTreinoDia()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 rounded-xl shadow text-xs">Salvar Alterações</button>
+                    <button onclick="fecharModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold px-4 py-3 rounded-xl text-xs">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Inserir Planilha Semanal (Com seletor da Segunda-feira correspondente) -->
+    <div id="modalSemana" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 hidden items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-slate-900 border border-slate-700 w-full max-w-lg rounded-t-3xl sm:rounded-2xl p-5 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="font-bold text-base text-emerald-400">📋 Inserir Planilha da Semana</h3>
+                <button onclick="fecharModalSemana()" class="text-slate-400 hover:text-white p-2"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <p class="text-xs text-slate-400 mb-3">Escolha a **Segunda-feira** desta semana e cole os treinos enviados pelo personal:</p>
+            
+            <div class="mb-3">
+                <label class="block text-[11px] font-bold text-emerald-400 uppercase mb-1">Data da Segunda-feira desta Semana</label>
+                <input type="date" id="dataSegundaInicio" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-100 font-bold">
+            </div>
+
+            <div class="space-y-2">
+                <div><label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Segunda-feira</label><input type="text" id="semSeg" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-xs text-slate-100" placeholder="Ex: Descanso"></div>
+                <div><label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Terça-feira (Tiros)</label><input type="text" id="semTer" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-xs text-slate-100" placeholder="Ex: 1km aq + 5x200m"></div>
+                <div><label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Quarta-feira</label><input type="text" id="semQua" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-xs text-slate-100" placeholder="Ex: Descanso"></div>
+                <div><label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Quinta-feira (Tiros)</label><input type="text" id="semQui" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-xs text-slate-100" placeholder="Ex: 1,5km aq + 5x250m"></div>
+                <div><label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Sexta-feira</label><input type="text" id="semSex" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-xs text-slate-100" placeholder="Ex: Descanso"></div>
+                <div><label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Sábado</label><input type="text" id="semSab" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-xs text-slate-100" placeholder="Ex: Livre"></div>
+                <div><label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Domingo (Longo)</label><input type="text" id="semDom" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-xs text-slate-100" placeholder="Ex: 5km"></div>
+                <div class="flex gap-3 pt-3">
+                    <button onclick="salvarPlanilhaSemanal()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 rounded-xl shadow text-xs">Salvar Planilha da Semana</button>
+                    <button onclick="fecharModalSemana()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold px-4 py-3 rounded-xl text-xs">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); });
+        }
+
+        let dataAtual = new Date();
+        let treinos = JSON.parse(localStorage.getItem('pace_week_treinos')) || {};
+
+        let graficoPaceInstance = null, graficoTempoInstance = null;
+
+        function mudarAba(aba) {
+            document.getElementById('abaTreinos').classList.add('hidden');
+            document.getElementById('abaGraficos').classList.add('hidden');
+            document.getElementById('btnTabTreinos').className = "py-2.5 rounded-lg text-slate-400 hover:text-white transition";
+            document.getElementById('btnTabGraficos').className = "py-2.5 rounded-lg text-slate-400 hover:text-white transition";
+
+            if (aba === 'treinos') {
+                document.getElementById('abaTreinos').classList.remove('hidden');
+                document.getElementById('btnTabTreinos').className = "py-2.5 rounded-lg bg-emerald-600 text-white transition shadow";
+            } else if (aba === 'graficos') {
+                document.getElementById('abaGraficos').classList.remove('hidden');
+                document.getElementById('btnTabGraficos').className = "py-2.5 rounded-lg bg-emerald-600 text-white transition shadow";
+                renderizarGraficos();
+            }
+        }
+
+        function renderizarGraficos() {
+            let datas = [], paces = [], tempos = [];
+            Object.keys(treinos).sort().forEach(dataStr => {
+                let t = treinos[dataStr];
+                if (t.concluido && (t.pace || t.tempo)) {
+                    datas.push(dataStr.split('-').reverse().join('/'));
+                    if (t.pace) {
+                        let p = t.pace.replace(' min/km','').split(':');
+                        paces.push((parseInt(p[0]) + (p[1] ? parseInt(p[1])/60 : 0)).toFixed(2));
+                    } else { paces.push(0); }
+                    if (t.tempo) {
+                        let tm = t.tempo.split(':');
+                        tempos.push((parseInt(tm[0]) + (tm[1] ? parseInt(tm[1])/60 : 0)).toFixed(1));
+                    } else { tempos.push(0); }
+                }
+            });
+
+            const ctxPace = document.getElementById('graficoPace').getContext('2d');
+            if (graficoPaceInstance) graficoPaceInstance.destroy();
+            graficoPaceInstance = new Chart(ctxPace, {
+                type: 'line',
+                data: { labels: datas.length ? datas : ['Sem dados'], datasets: [{ label: 'Pace (min/km)', data: paces.length ? paces : [0], borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', borderWidth: 2.5, tension: 0.3, fill: true }] },
+                options: { responsive: true, scales: { y: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }, x: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } } }, plugins: { legend: { labels: { color: '#f8fafc', font: { size: 10 } } } } }
+            });
+
+            const ctxTempo = document.getElementById('graficoTempo').getContext('2d');
+            if (graficoTempoInstance) graficoTempoInstance.destroy();
+            graficoTempoInstance = new Chart(ctxTempo, {
+                type: 'bar',
+                data: { labels: datas.length ? datas : ['Sem dados'], datasets: [{ label: 'Tempo Total (min)', data: tempos.length ? tempos : [0], backgroundColor: 'rgba(52, 211, 153, 0.7)', borderColor: '#10b981', borderWidth: 1, borderRadius: 6 }] },
+                options: { responsive: true, scales: { y: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }, x: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } } }, plugins: { legend: { labels: { color: '#f8fafc', font: { size: 10 } } } } }
+            });
+        }
+
+        function formatarDataKey(date) { 
+            return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`; 
+        }
+
+        function renderizarApp() { 
+            renderizarCalendario(); 
+            renderizarResumoSemana(); 
+        }
+
+        function renderizarCalendario() {
+            const grade = document.getElementById('gradeDias');
+            grade.innerHTML = '';
+            const ano = dataAtual.getFullYear(), mes = dataAtual.getMonth();
+            const nomesMeses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+            document.getElementById('mesAnoTitulo').innerText = `${nomesMeses[mes]} de ${ano}`;
+            const primeiroDia = new Date(ano, mes, 1).getDay();
+            const ultimoDia = new Date(ano, mes + 1, 0).getDate();
+            const hojeStr = formatarDataKey(new Date());
+
+            for (let i = 0; i < primeiroDia; i++) grade.appendChild(document.createElement('div'));
+
+            for (let dia = 1; dia <= ultimoDia; dia++) {
+                const dataStr = formatarDataKey(new Date(ano, mes, dia));
+                const treino = treinos[dataStr];
+                const celula = document.createElement('div');
+                celula.className = `h-11 rounded-xl flex flex-col items-center justify-center relative cursor-pointer text-xs font-medium transition ${dataStr === hojeStr ? 'border border-emerald-500' : 'hover:bg-slate-800/60'}`;
+                celula.className += treino ? (treino.concluido ? ' bg-emerald-950/70 text-emerald-300 font-bold' : ' bg-slate-800/80 text-slate-200 font-bold') : ' text-slate-400';
+                celula.innerHTML = `<span>${dia}</span>`;
+                if (treino) {
+                    const ponto = document.createElement('div');
+                    ponto.className = `w-1.5 h-1.5 rounded-full mt-0.5 ${treino.concluido ? 'bg-emerald-400' : 'bg-amber-400'}`;
+                    celula.appendChild(ponto);
+                }
+                celula.onclick = () => abrirModalTreino(dataStr);
+                grade.appendChild(celula);
+            }
+        }
+
+        function mudarMes(dir) { dataAtual.setMonth(dataAtual.getMonth() + dir); renderizarCalendario(); }
+        
+        function abrirModalTreino(dataStr) {
+            document.getElementById('modalDataId').value = dataStr;
+            const t = treinos[dataStr] || { descricao: '', tempo: '', pace: '', obs: '', concluido: false };
+            const [ano, mes, dia] = dataStr.split('-');
+            document.getElementById('modalTitulo').innerText = `Treino de ${dia}/${mes}/${ano}`;
+            document.getElementById('modalDescricao').value = t.descricao;
+            document.getElementById('modalTempo').value = t.tempo || '';
+            document.getElementById('modalPace').value = t.pace || '';
+            document.getElementById('modalObs').value = t.obs || '';
+            document.getElementById('modalConcluido').checked = t.concluido || false;
+            document.getElementById('modalTreino').classList.remove('hidden');
+            document.getElementById('modalTreino').classList.add('flex');
+        }
+
+        function fecharModal() { document.getElementById('modalTreino').classList.remove('flex'); document.getElementById('modalTreino').classList.add('hidden'); }
+        
+        function salvarTreinoDia() {
+            const dataStr = document.getElementById('modalDataId').value;
+            const descricao = document.getElementById('modalDescricao').value;
+            const tempo = document.getElementById('modalTempo').value;
+            const pace = document.getElementById('modalPace').value;
+            const obs = document.getElementById('modalObs').value;
+            const concluido = document.getElementById('modalConcluido').checked;
+            if (!descricao && !tempo && !pace) delete treinos[dataStr];
+            else treinos[dataStr] = { descricao, tempo, pace, obs, concluido };
+            localStorage.setItem('pace_week_treinos', JSON.stringify(treinos));
+            fecharModal(); renderizarApp();
+        }
+
+        function abrirModalSemana() { 
+            // Preencher com a data da segunda-feira atual por padrão
+            const hoje = new Date();
+            const diff = hoje.getDate() - hoje.getDay() + (hoje.getDay() === 0 ? -6 : 1);
+            const segunda = new Date(hoje.setDate(diff));
+            document.getElementById('dataSegundaInicio').value = formatarDataKey(segunda);
+            
+            document.getElementById('modalSemana').classList.remove('hidden'); 
+            document.getElementById('modalSemana').classList.add('flex'); 
+        }
+
+        function fecharModalSemana() { document.getElementById('modalSemana').classList.remove('flex'); document.getElementById('modalSemana').classList.add('hidden'); }
+        
+        function salvarPlanilhaSemanal() {
+            const dataInput = document.getElementById('dataSegundaInicio').value;
+            if (!dataInput) { alert('Selecione a data da segunda-feira!'); return; }
+            
+            let segunda = new Date(dataInput + 'T00:00:00');
+            
+            ['semSeg', 'semTer', 'semQua', 'semQui', 'semSex', 'semSab', 'semDom'].forEach((id, idx) => {
+                let val = document.getElementById(id).value.trim();
+                let d = new Date(segunda); 
+                d.setDate(segunda.getDate() + idx);
+                let ds = formatarDataKey(d);
+                
+                if (val) {
+                    if (!treinos[ds]) treinos[ds] = { descricao: val, tempo: '', pace: '', obs: '', concluido: false };
+                    else treinos[ds].descricao = val;
+                }
+            });
+            localStorage.setItem('pace_week_treinos', JSON.stringify(treinos));
+            fecharModalSemana(); renderizarApp(); alert('Planilha da semana salva com sucesso!');
+        }
+
+        function renderizarResumoSemana() {
+            const lista = document.getElementById('resumoSemanaLista');
+            lista.innerHTML = '';
+            for (let i = 0; i < 7; i++) {
+                let d = new Date(); d.setDate(d.getDate() + i);
+                let dataStr = formatarDataKey(d), treino = treinos[dataStr];
+                let nomeDia = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'][d.getDay()];
+                let dtFmt = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`;
+                let item = document.createElement('div');
+                item.className = `p-3 rounded-xl border flex justify-between items-center cursor-pointer transition ${treino?.concluido ? 'bg-emerald-950/50 border-emerald-800/50' : 'bg-slate-900/85 border-slate-700/60'}`;
+                item.onclick = () => abrirModalTreino(dataStr);
+                item.innerHTML = `<div class="flex items-center gap-3"><div class="text-center min-w-[38px]"><span class="block text-[10px] font-bold text-slate-400 uppercase">${nomeDia}</span><span class="block text-xs font-semibold text-slate-200">${dtFmt}</span></div><div class="text-xs"><p class="font-medium text-slate-200">${treino ? treino.descricao : '<span class="text-slate-500 italic">Nenhum treino</span>'}</p>${treino?.tempo ? `<p class="text-emerald-400 text-[11px] mt-0.5">Tempo: ${treino.tempo} \vert{} Pace:${treino.pace}</p>` : ''}</div></div><div><i class="fa-solid ${treino?.concluido ? 'fa-circle-check text-emerald-400 text-base' : 'fa-chevron-right text-slate-600 text-xs'}"></i></div>`;
+                lista.appendChild(item);
+            }
+        }
+        renderizarApp();
+    </script>
+</body>
+</html>

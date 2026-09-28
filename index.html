@@ -3,192 +3,370 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Meus Treinos de Corrida</title>
+    <title>RecifeRun - Meus Treinos de Corrida</title>
+    <!-- Ícone para Atalho no Celular -->
+    <link rel="apple-touch-icon" href="https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=192&h=192&fit=crop">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome para ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Leaflet CSS para Mapas -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Chart.js para Gráficos de Performance -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            width: 100vw;
-            min-height: 100vh;
+            margin: 0; padding: 0; width: 100vw; min-height: 100vh;
         }
-        /* Fundo fixo com a imagem das ruas do Recife e sobreposição escura */
         .bg-recife-runner {
-            background-image: linear-gradient(rgba(15, 23, 42, 0.86), rgba(15, 23, 42, 0.94)), url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
+            background-image: linear-gradient(rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.95)), url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=');
+            background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed;
         }
+        #mapaGPS { height: 220px; width: 100%; border-radius: 1rem; z-index: 10; }
     </style>
 </head>
-<body class="bg-recife-runner text-slate-100 flex flex-col min-h-screen">
+<body class="bg-recife-runner text-slate-100 flex flex-col min-h-screen pb-20">
 
-    <!-- Header Fixo Otimizado para Celular -->
+    <!-- Header Fixo com Logo Moderna RecifeRun -->
     <header class="w-full bg-slate-900/90 backdrop-blur-md border-b border-slate-700/60 px-4 py-3 sticky top-0 z-30 shadow-md">
         <div class="w-full max-w-lg mx-auto flex justify-between items-center">
-            <h1 class="text-base sm:text-lg font-bold flex items-center gap-2">
-                <i class="fa-solid fa-person-running text-emerald-400"></i> Meus Treinos
-            </h1>
-            <button onclick="abrirModalSemana()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-3 py-2 rounded-lg shadow transition flex items-center gap-1.5 active:scale-95">
-                <i class="fa-solid fa-calendar-plus"></i> Atualizar Semana
-            </button>
+            
+            <!-- LOGO NOVA -->
+            <div class="flex items-center gap-2.5">
+                <svg class="w-8 h-8" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="36" height="36" rx="10" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+                    <path d="M10 24L16 12L22 20L26 14" stroke="url(#logo_grad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="26" cy="14" r="2.5" fill="#10B981"/>
+                    <defs>
+                        <linearGradient id="logo_grad" x1="10" y1="12" x2="26" y2="24" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#34D399"/>
+                            <stop offset="1" stop-color="#059669"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <div class="flex flex-col">
+                    <span class="font-bold text-sm tracking-tight text-slate-100 leading-tight">Recife<span class="text-emerald-400">Run</span></span>
+                    <span class="text-[10px] text-slate-400 font-medium leading-none">Meus Treinos</span>
+                </div>
+            </div>
+
+            <!-- Botões do Topo -->
+            <div class="flex gap-2">
+                <button onclick="abrirModalSemana()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-2.5 py-2 rounded-lg shadow transition flex items-center gap-1">
+                    <i class="fa-solid fa-calendar-plus"></i> Semana
+                </button>
+                <a href="https://music.youtube.com" target="_blank" class="bg-red-600 hover:bg-red-500 text-white text-xs font-semibold px-2.5 py-2 rounded-lg shadow transition flex items-center gap-1" title="Abrir YouTube Music">
+                    <i class="fa-brands fa-youtube"></i> Som
+                </a>
+            </div>
         </div>
     </header>
 
-    <!-- Conteúdo Principal Adaptável -->
-    <main class="w-full max-w-lg mx-auto p-3 sm:p-4 flex-1 flex flex-col gap-4 pb-24">
-
-        <!-- Seção: Calendário Interativo -->
-        <div class="w-full bg-slate-900/85 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-slate-700/60">
-            <!-- Cabeçalho do Mês -->
-            <div class="flex justify-between items-center mb-3">
-                <button onclick="mudarMes(-1)" class="p-2 text-slate-400 hover:text-white transition"><i class="fa-solid fa-chevron-left"></i></button>
-                <h2 id="mesAnoTitulo" class="font-bold text-sm sm:text-base capitalize text-emerald-400"></h2>
-                <button onclick="mudarMes(1)" class="p-2 text-slate-400 hover:text-white transition"><i class="fa-solid fa-chevron-right"></i></button>
-            </div>
-
-            <!-- Dias da Semana -->
-            <div class="grid grid-cols-7 text-center text-[11px] sm:text-xs font-semibold text-slate-400 mb-2">
-                <span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span>
-            </div>
-
-            <!-- Grade de Dias -->
-            <div id="gradeDias" class="grid grid-cols-7 gap-1.5 text-center text-xs sm:text-sm"></div>
+    <!-- Navegação por Abas -->
+    <nav class="w-full max-w-lg mx-auto px-4 pt-3">
+        <div class="grid grid-cols-3 bg-slate-900/80 p-1 rounded-xl border border-slate-700/60 text-xs font-bold text-center">
+            <button onclick="mudarAba('treinos')" id="btnTabTreinos" class="py-2 rounded-lg bg-emerald-600 text-white transition shadow">Planilha & Agenda</button>
+            <button onclick="mudarAba('gps')" id="btnTabGPS" class="py-2 rounded-lg text-slate-400 hover:text-white transition">GPS & Corrida</button>
+            <button onclick="mudarAba('graficos')" id="btnTabGraficos" class="py-2 rounded-lg text-slate-400 hover:text-white transition">Performance</button>
         </div>
+    </nav>
 
-        <!-- Seção: Resumo e Atalhos da Semana -->
-        <div class="w-full bg-slate-900/85 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-slate-700/60">
-            <h3 class="text-xs sm:text-sm font-bold text-slate-300 uppercase tracking-wider mb-3 flex items-center gap-2">
-                <i class="fa-solid fa-list-check text-emerald-400"></i> Próximos Treinos da Semana
-            </h3>
-            <div id="resumoSemanaLista" class="space-y-2 text-xs sm:text-sm">
-                <!-- Preenchido via JS -->
+    <!-- Main Content -->
+    <main class="w-full max-w-lg mx-auto p-4 flex-1 flex flex-col gap-4">
+
+        <!-- ABA 1: TREINOS E CALENDÁRIO -->
+        <section id="abaTreinos" class="flex flex-col gap-4">
+            <div class="w-full bg-slate-900/85 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-slate-700/60">
+                <div class="flex justify-between items-center mb-3">
+                    <button onclick="mudarMes(-1)" class="p-2 text-slate-400 hover:text-white transition"><i class="fa-solid fa-chevron-left"></i></button>
+                    <h2 id="mesAnoTitulo" class="font-bold text-sm capitalize text-emerald-400"></h2>
+                    <button onclick="mudarMes(1)" class="p-2 text-slate-400 hover:text-white transition"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <div class="grid grid-cols-7 text-center text-[11px] font-semibold text-slate-400 mb-2">
+                    <span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span>
+                </div>
+                <div id="gradeDias" class="grid grid-cols-7 gap-1.5 text-center text-xs"></div>
             </div>
-        </div>
+
+            <div class="w-full bg-slate-900/85 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-slate-700/60">
+                <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-list-check text-emerald-400"></i> Próximos Treinos da Semana
+                </h3>
+                <div id="resumoSemanaLista" class="space-y-2 text-xs"></div>
+            </div>
+        </section>
+
+        <!-- ABA 2: GPS E RASTREIO DE CORRIDA -->
+        <section id="abaGPS" class="hidden flex flex-col gap-4">
+            <div class="w-full bg-slate-900/85 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-slate-700/60 flex flex-col gap-3">
+                <h3 class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-location-crosshairs"></i> Rastreamento de Percurso (GPS)
+                </h3>
+                <div id="mapaGPS"></div>
+                
+                <div class="grid grid-cols-3 gap-2 text-center py-2 bg-slate-950/60 rounded-xl border border-slate-800">
+                    <div>
+                        <span class="block text-[10px] text-slate-400 uppercase">Distância</span>
+                        <span id="gpsDistancia" class="text-base font-bold text-emerald-400">0.00 km</span>
+                    </div>
+                    <div>
+                        <span class="block text-[10px] text-slate-400 uppercase">Tempo</span>
+                        <span id="gpsTempo" class="text-base font-bold text-emerald-400">00:00</span>
+                    </div>
+                    <div>
+                        <span class="block text-[10px] text-slate-400 uppercase">Pace Médio</span>
+                        <span id="gpsPace" class="text-base font-bold text-emerald-400">0:00</span>
+                    </div>
+                </div>
+
+                <div class="flex gap-2 pt-1">
+                    <button onclick="iniciarCorridaGPS()" id="btnIniciarGPS" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 rounded-xl shadow text-xs transition">Iniciar Corrida</button>
+                    <button onclick="pausarCorridaGPS()" id="btnPausarGPS" class="flex-1 bg-amber-600 hover:bg-amber-500 text-white font-semibold py-3 rounded-xl shadow text-xs transition hidden">Pausar</button>
+                    <button onclick="pararCorridaGPS()" id="btnPararGPS" class="bg-red-600 hover:bg-red-500 text-white font-semibold px-4 py-3 rounded-xl shadow text-xs transition hidden"><i class="fa-solid fa-stop"></i></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABA 3: GRÁFICOS DE PERFORMANCE -->
+        <section id="abaGraficos" class="hidden flex flex-col gap-4">
+            <div class="w-full bg-slate-900/85 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-slate-700/60 flex flex-col gap-3">
+                <h3 class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-chart-line"></i> Evolução de Desempenho
+                </h3>
+                <p class="text-[11px] text-slate-400">Acompanhe o seu ritmo e os resultados salvos nos treinos concluídos.</p>
+                
+                <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800">
+                    <canvas id="graficoPace"></canvas>
+                </div>
+            </div>
+        </section>
 
     </main>
 
     <!-- Modal de Detalhes / Edição de Treino -->
     <div id="modalTreino" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 hidden items-end sm:items-center justify-center p-0 sm:p-4">
-        <div class="bg-slate-900 border border-slate-700 w-full max-w-lg rounded-t-3xl sm:rounded-2xl p-5 sm:p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+        <div class="bg-slate-900 border border-slate-700 w-full max-w-lg rounded-t-3xl sm:rounded-2xl p-5 shadow-2xl max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-4">
-                <h3 id="modalTitulo" class="font-bold text-base sm:text-lg text-emerald-400">Detalhes do Treino</h3>
+                <h3 id="modalTitulo" class="font-bold text-base text-emerald-400">Detalhes do Treino</h3>
                 <button onclick="fecharModal()" class="text-slate-400 hover:text-white p-2"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-
             <input type="hidden" id="modalDataId">
-
-            <div class="space-y-3 sm:space-y-4">
+            <div class="space-y-3">
                 <div>
-                    <label class="block text-[11px] font-semibold text-slate-400 uppercase mb-1">Descrição / Planejamento do Treino</label>
-                    <textarea id="modalDescricao" rows="3" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-xs sm:text-sm text-slate-100 focus:outline-none focus:border-emerald-500" placeholder="Ex: 1km aquecimento + tiros..."></textarea>
+                    <label class="block text-[11px] font-semibold text-slate-400 uppercase mb-1">Descrição do Treino</label>
+                    <textarea id="modalDescricao" rows="3" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-xs text-slate-100 focus:outline-none focus:border-emerald-500"></textarea>
                 </div>
-
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-[11px] font-semibold text-slate-400 uppercase mb-1">Tempo Total (min)</label>
-                        <input type="text" id="modalTempo" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-xs sm:text-sm text-slate-100 focus:outline-none focus:border-emerald-500" placeholder="Ex: 34:20">
+                        <input type="text" id="modalTempo" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-xs text-slate-100" placeholder="Ex: 34:20">
                     </div>
                     <div>
-                        <label class="block text-[11px] font-semibold text-slate-400 uppercase mb-1">Pace Médio</label>
-                        <input type="text" id="modalPace" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-xs sm:text-sm text-slate-100 focus:outline-none focus:border-emerald-500" placeholder="Ex: 5:35 min/km">
+                        <label class="block text-[11px] font-semibold text-slate-400 uppercase mb-1">Pace Médio (min/km)</label>
+                        <input type="text" id="modalPace" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-xs text-slate-100" placeholder="Ex: 5:35">
                     </div>
                 </div>
-
                 <div>
                     <label class="block text-[11px] font-semibold text-slate-400 uppercase mb-1">Observações / Sensações</label>
-                    <input type="text" id="modalObs" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-xs sm:text-sm text-slate-100 focus:outline-none focus:border-emerald-500" placeholder="Ex: Senti o joelho levemente no final...">
+                    <input type="text" id="modalObs" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-xs text-slate-100" placeholder="Ex: Joelho ótimo, ritmo forte">
                 </div>
-
                 <div class="flex items-center gap-3 py-2">
                     <input type="checkbox" id="modalConcluido" class="w-5 h-5 accent-emerald-500 rounded cursor-pointer">
-                    <label for="modalConcluido" class="text-xs sm:text-sm font-medium text-slate-200 cursor-pointer">Treino Concluído</label>
+                    <label for="modalConcluido" class="text-xs font-medium text-slate-200 cursor-pointer">Treino Concluído</label>
                 </div>
-
                 <div class="flex gap-3 pt-2">
-                    <button onclick="salvarTreinoDia()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 rounded-xl shadow transition text-xs sm:text-sm active:scale-95">Salvar Alterações</button>
-                    <button onclick="fecharModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold px-4 py-3 rounded-xl transition text-xs sm:text-sm">Cancelar</button>
+                    <button onclick="salvarTreinoDia()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 rounded-xl shadow text-xs">Salvar Alterações</button>
+                    <button onclick="fecharModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold px-4 py-3 rounded-xl text-xs">Cancelar</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal de Gerenciamento da Planilha Semanal (Todo Domingo) -->
+    <!-- Modal de Inserir Planilha Semanal -->
     <div id="modalSemana" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 hidden items-end sm:items-center justify-center p-0 sm:p-4">
-        <div class="bg-slate-900 border border-slate-700 w-full max-w-lg rounded-t-3xl sm:rounded-2xl p-5 sm:p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+        <div class="bg-slate-900 border border-slate-700 w-full max-w-lg rounded-t-3xl sm:rounded-2xl p-5 shadow-2xl max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-3">
-                <h3 class="font-bold text-base sm:text-lg text-emerald-400">📋 Inserir Planilha da Semana</h3>
+                <h3 class="font-bold text-base text-emerald-400">📋 Inserir Planilha da Semana</h3>
                 <button onclick="fecharModalSemana()" class="text-slate-400 hover:text-white p-2"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-
-            <p class="text-xs text-slate-400 mb-3">Cole ou digite abaixo os treinos enviados pelo seu personal para cada dia desta semana:</p>
-
+            <p class="text-xs text-slate-400 mb-3">Cole ou digite os treinos enviados pelo personal para esta semana:</p>
             <div class="space-y-2.5">
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Segunda-feira</label>
-                    <input type="text" id="semSeg" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-100" placeholder="Ex: Descanso / Off">
-                </div>
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Terça-feira</label>
-                    <input type="text" id="semTer" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-100" placeholder="Ex: 1km aq + 5x200m + 5x100m">
-                </div>
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Quarta-feira</label>
-                    <input type="text" id="semQua" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-100" placeholder="Ex: Descanso / Fortalecimento">
-                </div>
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Quinta-feira</label>
-                    <input type="text" id="semQui" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-100" placeholder="Ex: 1,5km aq + 5x250m + 5x100m">
-                </div>
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Sexta-feira</label>
-                    <input type="text" id="semSex" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-100" placeholder="Ex: Descanso">
-                </div>
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Sábado</label>
-                    <input type="text" id="semSab" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-100" placeholder="Ex: Livre">
-                </div>
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Domingo</label>
-                    <input type="text" id="semDom" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-100" placeholder="Ex: 5km entre 30-40 min">
-                </div>
-
+                <div><label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Segunda-feira</label><input type="text" id="semSeg" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-100" placeholder="Ex: Descanso"></div>
+                <div><label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Terça-feira</label><input type="text" id="semTer" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-100" placeholder="Ex: 1km aq + 5x200m + 5x100m"></div>
+                <div><label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Quarta-feira</label><input type="text" id="semQua" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-100" placeholder="Ex: Descanso"></div>
+                <div><label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Quinta-feira</label><input type="text" id="semQui" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-100" placeholder="Ex: 1,5km aq + 5x250m + 5x100m"></div>
+                <div><label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Sexta-feira</label><input type="text" id="semSex" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-100" placeholder="Ex: Descanso"></div>
+                <div><label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Sábado</label><input type="text" id="semSab" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-100" placeholder="Ex: Livre"></div>
+                <div><label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Domingo</label><input type="text" id="semDom" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-100" placeholder="Ex: 5km entre 30-40 min"></div>
                 <div class="flex gap-3 pt-3">
-                    <button onclick="salvarPlanilhaSemanal()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 rounded-xl shadow transition text-xs sm:text-sm active:scale-95">Salvar Planilha da Semana</button>
-                    <button onclick="fecharModalSemana()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold px-4 py-3 rounded-xl transition text-xs sm:text-sm">Cancelar</button>
+                    <button onclick="salvarPlanilhaSemanal()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 rounded-xl shadow text-xs">Salvar Planilha</button>
+                    <button onclick="fecharModalSemana()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold px-4 py-3 rounded-xl text-xs">Cancelar</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Leaflet JS para Mapas -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <!-- Script de Funcionamento -->
     <script>
         let dataAtual = new Date();
         let treinos = JSON.parse(localStorage.getItem('meus_treinos_corrida')) || {};
+        let graficoPaceInstance = null;
 
+        // Inicializar com treino de exemplo se vazio
         if (Object.keys(treinos).length === 0) {
             const hojeStr = new Date().toISOString().split('T')[0];
-            treinos[hojeStr] = {
-                descricao: "Terça: 1km aquecimento + 5 tiros de 200m (desc 1m30) + 5 tiros 100m (desc 30s)",
-                tempo: "",
-                pace: "",
-                obs: "",
-                concluido: false
-            };
+            treinos[hojeStr] = { descricao: "Terça: 1km aq + 5x200m + 5x100m", tempo: "24:00", pace: "5:30", obs: "Bom ritmo", concluido: true };
             localStorage.setItem('meus_treinos_corrida', JSON.stringify(treinos));
         }
 
+        function mudarAba(aba) {
+            document.getElementById('abaTreinos').classList.add('hidden');
+            document.getElementById('abaGPS').classList.add('hidden');
+            document.getElementById('abaGraficos').classList.add('hidden');
+
+            document.getElementById('btnTabTreinos').className = "py-2 rounded-lg text-slate-400 hover:text-white transition";
+            document.getElementById('btnTabGPS').className = "py-2 rounded-lg text-slate-400 hover:text-white transition";
+            document.getElementById('btnTabGraficos').className = "py-2 rounded-lg text-slate-400 hover:text-white transition";
+
+            if (aba === 'treinos') {
+                document.getElementById('abaTreinos').classList.remove('hidden');
+                document.getElementById('btnTabTreinos').className = "py-2 rounded-lg bg-emerald-600 text-white transition shadow";
+            } else if (aba === 'gps') {
+                document.getElementById('abaGPS').classList.remove('hidden');
+                document.getElementById('btnTabGPS').className = "py-2 rounded-lg bg-emerald-600 text-white transition shadow";
+                setTimeout(() => { if (mapa) mapa.invalidateSize(); }, 200);
+            } else if (aba === 'graficos') {
+                document.getElementById('abaGraficos').classList.remove('hidden');
+                document.getElementById('btnTabGraficos').className = "py-2 rounded-lg bg-emerald-600 text-white transition shadow";
+                renderizarGraficos();
+            }
+        }
+
+        // Variáveis de GPS
+        let mapa, watchID, coordenadasPercurso = [], distanciaTotalM = 0, tempoSegundos = 0, timerGPS = null, correndoGPS = false;
+
+        function inicializarMapa() {
+            if (mapa) return;
+            mapa = L.map('mapaGPS').setView([-8.0476, -34.8770], 14); // Padrão Recife
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap'
+            }).addTo(mapa);
+        }
+        setTimeout(inicializarMapa, 500);
+
+        function calcularDistancia(lat1, lon1, lat2, lon2) {
+            const R = 6371e3;
+            const φ1 = lat1 * Math.PI/180, φ2 = lat2 * Math.PI/180;
+            const Δφ = (lat2-lat1) * Math.PI/180, Δλ = (lon2-lon1) * Math.PI/180;
+            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
+        function iniciarCorridaGPS() {
+            if (!navigator.geolocation) { alert('GPS não suportado neste aparelho.'); return; }
+            correndoGPS = true;
+            document.getElementById('btnIniciarGPS').classList.add('hidden');
+            document.getElementById('btnPausarGPS').classList.remove('hidden');
+            document.getElementById('btnPararGPS').classList.remove('hidden');
+
+            timerGPS = setInterval(() => {
+                tempoSegundos++;
+                let min = Math.floor(tempoSegundos / 60), sec = tempoSegundos % 60;
+                document.getElementById('gpsTempo').innerText = `${String(min).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+                
+                if (distanciaTotalM > 0) {
+                    let paceSec = (tempoSegundos / (distanciaTotalM / 1000));
+                    let pMin = Math.floor(paceSec / 60), pSec = Math.floor(paceSec % 60);
+                    document.getElementById('gpsPace').innerText = `${pMin}:${String(pSec).padStart(2,'0')}`;
+                }
+            }, 1000);
+
+            watchID = navigator.geolocation.watchPosition(pos => {
+                const lat = pos.coords.latitude, lon = pos.coords.longitude;
+                const novaCoord = [lat, lon];
+                if (coordenadasPercurso.length > 0) {
+                    let ultima = coordenadasPercurso[coordenadasPercurso.length - 1];
+                    let dist = calcularDistancia(ultima[0], ultima[1], lat, lon);
+                    if (dist > 3) { distanciaTotalM += dist; }
+                }
+                coordenadasPercurso.push(novaCoord);
+                mapa.setView(novaCoord, 16);
+                L.polyline(coordenadasPercurso, { color: '#10b981', weight: 4 }).addTo(mapa);
+                document.getElementById('gpsDistancia').innerText = `${(distanciaTotalM / 1000).toFixed(2)} km`;
+            }, err => console.error(err), { enableHighAccuracy: true });
+        }
+
+        function pausarCorridaGPS() {
+            correndoGPS = false;
+            clearInterval(timerGPS);
+            navigator.geolocation.clearWatch(watchID);
+            document.getElementById('btnPausarGPS').classList.add('hidden');
+            document.getElementById('btnIniciarGPS').classList.remove('hidden');
+            document.getElementById('btnIniciarGPS').innerText = "Retomar";
+        }
+
+        function pararCorridaGPS() {
+            pausarCorridaGPS();
+            alert(`Corrida finalizada! Distância: ${(distanciaTotalM/1000).toFixed(2)}km em ${document.getElementById('gpsTempo').innerText}`);
+            distanciaTotalM = 0; tempoSegundos = 0; coordenadasPercurso = [];
+            document.getElementById('gpsDistancia').innerText = "0.00 km";
+            document.getElementById('gpsTempo').innerText = "00:00";
+            document.getElementById('gpsPace').innerText = "0:00";
+            document.getElementById('btnPararGPS').classList.add('hidden');
+            document.getElementById('btnIniciarGPS').innerText = "Iniciar Corrida";
+        }
+
+        // Gráficos Chart.js
+        function renderizarGraficos() {
+            const ctx = document.getElementById('graficoPace').getContext('2d');
+            let datas = [], paces = [];
+
+            Object.keys(treinos).sort().forEach(dataStr => {
+                let t = treinos[dataStr];
+                if (t.concluido && t.pace) {
+                    datas.push(dataStr.split('-').reverse().join('/'));
+                    let partes = t.pace.replace(' min/km','').split(':');
+                    let minDec = parseInt(partes[0]) + (partes[1] ? parseInt(partes[1])/60 : 0);
+                    paces.push(minDec.toFixed(2));
+                }
+            });
+
+            if (graficoPaceInstance) graficoPaceInstance.destroy();
+
+            graficoPaceInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: datas.length ? datas : ['Sem dados'],
+                    datasets: [{
+                        label: 'Pace (min/km - quanto menor, melhor)',
+                        data: paces.length ? paces : [0],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
+                        x: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }
+                    },
+                    plugins: { legend: { labels: { color: '#f8fafc', font: { size: 10 } } } }
+                }
+            });
+        }
+
+        // Funções de Calendário
         function formatarDataKey(date) {
-            const ano = date.getFullYear();
-            const mes = String(date.getMonth() + 1).padStart(2, '0');
-            const dia = String(date.getDate()).padStart(2, '0');
-            return `${ano}-${mes}-${dia}`;
+            return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
         }
 
         function renderizarApp() {
@@ -199,79 +377,56 @@
         function renderizarCalendario() {
             const grade = document.getElementById('gradeDias');
             grade.innerHTML = '';
-
-            const ano = dataAtual.getFullYear();
-            const mes = dataAtual.getMonth();
-
+            const ano = dataAtual.getFullYear(), mes = dataAtual.getMonth();
             const nomesMeses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
             document.getElementById('mesAnoTitulo').innerText = `${nomesMeses[mes]} de ${ano}`;
 
-            const primeiroDiaDoMes = new Date(ano, mes, 1).getDay();
-            const ultimoDiaDoMes = new Date(ano, mes + 1, 0).getDate();
+            const primeiroDia = new Date(ano, mes, 1).getDay();
+            const ultimoDia = new Date(ano, mes + 1, 0).getDate();
             const hojeStr = formatarDataKey(new Date());
 
-            for (let i = 0; i < primeiroDiaDoMes; i++) {
-                const divVazia = document.createElement('div');
-                grade.appendChild(divVazia);
-            }
+            for (let i = 0; i < primeiroDia; i++) grade.appendChild(document.createElement('div'));
 
-            for (let dia = 1; dia <= ultimoDiaDoMes; dia++) {
-                const dataObj = new Date(ano, mes, dia);
-                const dataStr = formatarDataKey(dataObj);
-                const treinoDoDia = treinos[dataStr];
-
+            for (let dia = 1; dia <= ultimoDia; dia++) {
+                const dataStr = formatarDataKey(new Date(ano, mes, dia));
+                const treino = treinos[dataStr];
                 const celula = document.createElement('div');
-                celula.className = `h-11 sm:h-12 rounded-xl flex flex-col items-center justify-center relative cursor-pointer text-xs sm:text-sm font-medium transition ${dataStr === hojeStr ? 'border border-emerald-500' : 'hover:bg-slate-800/60'}`;
+                celula.className = `h-11 rounded-xl flex flex-col items-center justify-center relative cursor-pointer text-xs font-medium transition ${dataStr === hojeStr ? 'border border-emerald-500' : 'hover:bg-slate-800/60'}`;
                 
-                if (treinoDoDia) {
-                    if (treinoDoDia.concluido) {
-                        celula.className += ' bg-emerald-950/70 text-emerald-300 font-bold';
-                    } else {
-                        celula.className += ' bg-slate-800/80 text-slate-200 font-bold';
-                    }
+                if (treino) {
+                    celula.className += treino.concluido ? ' bg-emerald-950/70 text-emerald-300 font-bold' : ' bg-slate-800/80 text-slate-200 font-bold';
                 } else {
                     celula.className += ' text-slate-400';
                 }
 
                 celula.innerHTML = `<span>${dia}</span>`;
-                if (treinoDoDia) {
+                if (treino) {
                     const ponto = document.createElement('div');
-                    ponto.className = `w-1.5 h-1.5 rounded-full mt-0.5 ${treinoDoDia.concluido ? 'bg-emerald-400' : 'bg-amber-400'}`;
+                    ponto.className = `w-1.5 h-1.5 rounded-full mt-0.5 ${treino.concluido ? 'bg-emerald-400' : 'bg-amber-400'}`;
                     celula.appendChild(ponto);
                 }
-
                 celula.onclick = () => abrirModalTreino(dataStr);
                 grade.appendChild(celula);
             }
         }
 
-        function mudarMes(direcao) {
-            dataAtual.setMonth(dataAtual.getMonth() + direcao);
-            renderizarCalendario();
-        }
+        function mudarMes(dir) { dataAtual.setMonth(dataAtual.getMonth() + dir); renderizarCalendario(); }
 
         function abrirModalTreino(dataStr) {
             document.getElementById('modalDataId').value = dataStr;
-            const treino = treinos[dataStr] || { descricao: '', tempo: '', pace: '', obs: '', concluido: false };
-            
+            const t = treinos[dataStr] || { descricao: '', tempo: '', pace: '', obs: '', concluido: false };
             const [ano, mes, dia] = dataStr.split('-');
             document.getElementById('modalTitulo').innerText = `Treino de ${dia}/${mes}/${ano}`;
-            document.getElementById('modalDescricao').value = treino.descricao;
-            document.getElementById('modalTempo').value = treino.tempo || '';
-            document.getElementById('modalPace').value = treino.pace || '';
-            document.getElementById('modalObs').value = treino.obs || '';
-            document.getElementById('modalConcluido').checked = treino.concluido || false;
-
-            const modal = document.getElementById('modalTreino');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+            document.getElementById('modalDescricao').value = t.descricao;
+            document.getElementById('modalTempo').value = t.tempo || '';
+            document.getElementById('modalPace').value = t.pace || '';
+            document.getElementById('modalObs').value = t.obs || '';
+            document.getElementById('modalConcluido').checked = t.concluido || false;
+            document.getElementById('modalTreino').classList.remove('hidden');
+            document.getElementById('modalTreino').classList.add('flex');
         }
 
-        function fecharModal() {
-            const modal = document.getElementById('modalTreino');
-            modal.classList.remove('flex');
-            modal.classList.add('hidden');
-        }
+        function fecharModal() { document.getElementById('modalTreino').classList.remove('flex'); document.getElementById('modalTreino').classList.add('hidden'); }
 
         function salvarTreinoDia() {
             const dataStr = document.getElementById('modalDataId').value;
@@ -281,91 +436,51 @@
             const obs = document.getElementById('modalObs').value;
             const concluido = document.getElementById('modalConcluido').checked;
 
-            if (!descricao && !tempo && !pace) {
-                delete treinos[dataStr];
-            } else {
-                treinos[dataStr] = { descricao, tempo, pace, obs, concluido };
-            }
+            if (!descricao && !tempo && !pace) delete treinos[dataStr];
+            else treinos[dataStr] = { descricao, tempo, pace, obs, concluido };
 
             localStorage.setItem('meus_treinos_corrida', JSON.stringify(treinos));
-            fecharModal();
-            renderizarApp();
+            fecharModal(); renderizarApp();
         }
 
-        function abrirModalSemana() {
-            const modal = document.getElementById('modalSemana');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-
-        function fecharModalSemana() {
-            const modal = document.getElementById('modalSemana');
-            modal.classList.remove('flex');
-            modal.classList.add('hidden');
-        }
+        function abrirModalSemana() { document.getElementById('modalSemana').classList.remove('hidden'); document.getElementById('modalSemana').classList.add('flex'); }
+        function fecharModalSemana() { document.getElementById('modalSemana').classList.remove('flex'); document.getElementById('modalSemana').classList.add('hidden'); }
 
         function salvarPlanilhaSemanal() {
-            const hoje = new Date();
-            const diaSemana = hoje.getDay();
-            const diffSegunda = hoje.getDate() - diaSemana + (diaSemana === 0 ? -6 : 1);
-            let segundaFeira = new Date(hoje.setDate(diffSegunda));
-
-            const diasInputs = ['semSeg', 'semTer', 'semQua', 'semQui', 'semSex', 'semSab', 'semDom'];
-
-            diasInputs.forEach((idInput, index) => {
-                const valorDesc = document.getElementById(idInput).value.trim();
-                if (valorDesc) {
-                    let d = new Date(segundaFeira);
-                    d.setDate(segundaFeira.getDate() + index);
-                    const dataStr = formatarDataKey(d);
-
-                    if (!treinos[dataStr]) {
-                        treinos[dataStr] = { descricao: valorDesc, tempo: '', pace: '', obs: '', concluido: false };
-                    } else {
-                        treinos[dataStr].descricao = valorDesc;
-                    }
+            const hoje = new Date(), diff = hoje.getDate() - hoje.getDay() + (hoje.getDay() === 0 ? -6 : 1);
+            let segunda = new Date(hoje.setDate(diff));
+            ['semSeg', 'semTer', 'semQua', 'semQui', 'semSex', 'semSab', 'semDom'].forEach((id, idx) => {
+                let val = document.getElementById(id).value.trim();
+                if (val) {
+                    let d = new Date(segunda); d.setDate(segunda.getDate() + idx);
+                    let ds = formatarDataKey(d);
+                    if (!treinos[ds]) treinos[ds] = { descricao: val, tempo: '', pace: '', obs: '', concluido: false };
+                    else treinos[ds].descricao = val;
                 }
             });
-
             localStorage.setItem('meus_treinos_corrida', JSON.stringify(treinos));
-            fecharModalSemana();
-            renderizarApp();
-            alert('Planilha da semana salva com sucesso!');
+            fecharModalSemana(); renderizarApp(); alert('Planilha salva com sucesso!');
         }
 
         function renderizarResumoSemana() {
             const lista = document.getElementById('resumoSemanaLista');
             lista.innerHTML = '';
-
             for (let i = 0; i < 7; i++) {
-                let d = new Date();
-                d.setDate(d.getDate() + i);
-                const dataStr = formatarDataKey(d);
-                const treino = treinos[dataStr];
-
-                const diasNomes = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-                const nomeDia = diasNomes[d.getDay()];
-                const dataFormatada = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`;
-
-                const item = document.createElement('div');
-                item.className = `p-3 rounded-xl border flex justify-between items-center cursor-pointer transition ${treino?.concluido ? 'bg-emerald-950/50 border-emerald-800/50' : 'bg-slate-900/85 border-slate-700/60 hover:bg-slate-800/80'}`;
+                let d = new Date(); d.setDate(d.getDate() + i);
+                let dataStr = formatarDataKey(d), treino = treinos[dataStr];
+                let nomeDia = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'][d.getDay()];
+                let dtFmt = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`;
                 
+                let item = document.createElement('div');
+                item.className = `p-3 rounded-xl border flex justify-between items-center cursor-pointer transition ${treino?.concluido ? 'bg-emerald-950/50 border-emerald-800/50' : 'bg-slate-900/85 border-slate-700/60'}`;
                 item.onclick = () => abrirModalTreino(dataStr);
-
                 item.innerHTML = `
                     <div class="flex items-center gap-3">
-                        <div class="text-center min-w-[38px]">
-                            <span class="block text-[10px] font-bold text-slate-400 uppercase">${nomeDia}</span>
-                            <span class="block text-xs font-semibold text-slate-200">${dataFormatada}</span>
-                        </div>
-                        <div class="text-xs">
-                            <p class="font-medium text-slate-200">${treino ? treino.descricao : '<span class="text-slate-500 italic">Nenhum treino cadastrado</span>'}</p>
-                            ${treino?.tempo ? `<p class="text-emerald-400 text-[11px] mt-0.5">Tempo: ${treino.tempo}${treino.pace ? '| Pace: ' + treino.pace : ''}</p>` : ''}
-                        </div>
+                        <div class="text-center min-w-[38px]"><span class="block text-[10px] font-bold text-slate-400 uppercase">${nomeDia}</span><span class="block text-xs font-semibold text-slate-200">${dtFmt}</span></div>
+                        <div class="text-xs"><p class="font-medium text-slate-200">${treino ? treino.descricao : '<span class="text-slate-500 italic">Nenhum treino</span>'}</p>
+                        ${treino?.tempo ? `<p class="text-emerald-400 text-[11px] mt-0.5">Tempo: ${treino.tempo} \vert{} Pace:${treino.pace}</p>` : ''}</div>
                     </div>
-                    <div>
-                        <i class="fa-solid ${treino?.concluido ? 'fa-circle-check text-emerald-400 text-base' : 'fa-chevron-right text-slate-600 text-xs'}"></i>
-                    </div>
+                    <div><i class="fa-solid ${treino?.concluido ? 'fa-circle-check text-emerald-400 text-base' : 'fa-chevron-right text-slate-600 text-xs'}"></i></div>
                 `;
                 lista.appendChild(item);
             }

@@ -13,7 +13,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg">
 <link rel="preconnect" href="https://unpkg.com">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxJBhQ6uJfL5c2Q6aY8W0m0Jm7d8Zk1yQ1Q8rR7kM=" crossorigin="">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
 <title>PaceWeek</title>
 <style>
 :root{--bg:#f4f7fb;--surface:#fff;--ink:#07111f;--muted:#708096;--line:#e6ebf2;--blue:#2563eb;--cyan:#06b6d4;--green:#16a34a;--orange:#f59e0b;--red:#ef4444;--nav:#07111f;--shadow:0 18px 50px rgba(7,17,31,.08);--r:24px}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 15% -10%,#dff5ff 0,#f5f8fc 35%,#f4f7fb 100%);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink)}button,input,select{font:inherit}button{cursor:pointer}.app{max-width:1180px;margin:auto;padding:18px 18px 105px}.top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin:5px 0 18px}.brand{display:flex;align-items:center;gap:12px}.mark{width:48px;height:48px;border-radius:12px;object-fit:cover;box-shadow:0 8px 20px #07111f20}.brand h1{margin:0;font-size:20px;letter-spacing:.08em}.brand p{margin:3px 0 0;color:var(--muted);font-size:12px}.pill{border:1px solid var(--line);background:#fff;padding:10px 13px;border-radius:999px;font-weight:800;color:#344256}.hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#07111f 0%,#0c2544 55%,#075985 100%);color:#fff;border-radius:32px;padding:28px;box-shadow:0 22px 60px #07111f25;display:grid;grid-template-columns:1.5fr .9fr;gap:25px}.hero:after{content:"";position:absolute;width:330px;height:330px;border:1px solid #ffffff12;border-radius:50%;right:-100px;top:-120px}.eyebrow{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;background:#ffffff10;border:1px solid #ffffff18;font-size:11px;font-weight:900;letter-spacing:.08em}.hero h2{font-size:40px;line-height:1.03;margin:15px 0 9px;letter-spacing:-.04em}.hero p{margin:0;color:#cbd5e1;max-width:620px;line-height:1.55}.hero-side{align-self:stretch;background:#ffffff0d;border:1px solid #ffffff12;border-radius:23px;padding:18px;display:flex;flex-direction:column;justify-content:space-between}.hero-side small{color:#94a3b8;font-weight:800}.hero-workout{font-size:25px;font-weight:950;margin:7px 0}.hero-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.hero-metrics div{background:#ffffff09;border-radius:14px;padding:9px}.hero-metrics b{display:block;font-size:17px}.hero-metrics span{font-size:10px;color:#94a3b8}.btn{border:0;border-radius:15px;padding:12px 16px;font-weight:900}.btn.primary{background:#fff;color:#07111f}.btn.blue{background:var(--blue);color:#fff}.btn.dark{background:#0f1d30;color:#fff}.btn.soft{background:#eef4ff;color:#174ea6}.btn.music{background:#e8f9f2;color:#047857}.tabs{display:flex;gap:8px;overflow:auto;padding:16px 0 8px;position:sticky;top:0;background:#f4f7fbed;backdrop-filter:blur(14px);z-index:20}.tab{border:1px solid var(--line);background:#fff;color:#6b7890;padding:11px 15px;border-radius:14px;font-weight:900;white-space:nowrap}.tab.active{background:#07111f;color:#fff;border-color:#07111f}.page{padding-top:12px}.hidden{display:none!important}.grid{display:grid;grid-template-columns:1.45fr .75fr;gap:18px}.grid.equal{grid-template-columns:1fr 1fr}.card{background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--shadow)}.card h3{margin:0 0 15px;font-size:18px}.muted{color:var(--muted)}.section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}.section-head h3{margin:0}.weeknav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.weeknav strong{font-size:15px}.iconbtn{border:1px solid var(--line);background:#fff;width:38px;height:38px;border-radius:12px;font-weight:900}.days{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}.day{min-height:126px;border:1px solid var(--line);border-radius:18px;background:#fff;padding:10px;display:flex;flex-direction:column;justify-content:space-between;transition:.2s}.day:hover{transform:translateY(-2px)}.day.today{border:2px solid var(--blue);background:#eff6ff}.day.done{background:#f0fdf4;border-color:#bbf7d0}.day .dow{font-size:10px;color:var(--muted);font-weight:950}.day .date{font-size:22px;font-weight:950}.day .type{font-size:11px;font-weight:850;line-height:1.3}.dot{width:9px;height:9px;border-radius:50%;background:#cbd5e1}.done .dot{background:var(--green)}.today .dot{background:var(--blue)}.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.stat{border:1px solid var(--line);border-radius:17px;padding:15px}.stat b{font-size:27px}.stat span{display:block;font-size:11px;color:var(--muted);font-weight:700;margin-top:3px}.goal{background:linear-gradient(135deg,#eff6ff,#ecfeff);border:1px solid #dbeafe;border-radius:20px;padding:17px;margin-top:12px}.goal-row{display:flex;justify-content:space-between;align-items:end;gap:10px}.goal strong{font-size:26px}.progress{height:9px;border-radius:99px;background:#dbeafe;overflow:hidden;margin-top:12px}.progress i{display:block;height:100%;width:42%;background:linear-gradient(90deg,#2563eb,#06b6d4);border-radius:99px}.quick{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.quick .btn{width:100%}.mapwrap{position:relative;height:520px;border-radius:22px;overflow:hidden;background:#dce8f0}.map{height:100%;width:100%}.map-overlay{position:absolute;left:14px;right:14px;top:14px;z-index:500;display:flex;justify-content:space-between;gap:10px;pointer-events:none}.map-chip{background:#fff;border:1px solid #fff;border-radius:14px;padding:9px 12px;box-shadow:0 8px 22px #07111f1c;font-weight:900;font-size:12px;pointer-events:auto}.run-card{background:#07111f;color:#fff;border-radius:24px;padding:20px}.run-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.runmetric{background:#ffffff0c;border:1px solid #ffffff10;border-radius:18px;padding:15px;text-align:center}.runmetric small{display:block;color:#94a3b8;font-size:11px;font-weight:800}.runmetric b{display:block;font-size:28px;margin-top:4px}.run-actions{display:grid;grid-template-columns:1.2fr .8fr .8fr;gap:9px;margin-top:12px}.run-actions .btn{min-height:50px}.fullscreen{position:fixed!important;inset:0!important;z-index:1000!important;width:100vw!important;height:100dvh!important;border-radius:0!important;background:#07111f!important;padding:14px!important;overflow:auto}.fullscreen .mapwrap{height:calc(100dvh - 300px);min-height:300px}.fullscreen .run-card{margin-top:10px}.closefull{position:absolute;right:14px;top:14px;z-index:1100;background:#fff;color:#07111f;border:0;border-radius:12px;padding:10px 12px;font-weight:900}.pacebox{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field{border:1px solid var(--line);border-radius:16px;padding:12px;background:#fff}.field label{display:block;font-size:11px;color:var(--muted);font-weight:900}.field input,.field select{width:100%;margin-top:5px;border:0;outline:0;font-weight:900;background:transparent}.zones{display:grid;gap:8px}.zone{display:grid;grid-template-columns:55px 1fr 70px;align-items:center;gap:10px;border:1px solid var(--line);border-radius:15px;padding:10px}.zone b{font-size:13px}.zonebar{height:8px;background:#e8edf3;border-radius:99px;overflow:hidden}.zonebar i{display:block;height:100%;border-radius:99px}.z1 i{width:28%;background:#22c55e}.z2 i{width:45%;background:#84cc16}.z3 i{width:60%;background:#eab308}.z4 i{width:75%;background:#f97316}.z5 i{width:90%;background:#ef4444}.history-item{display:flex;justify-content:space-between;gap:10px;padding:13px 0;border-bottom:1px solid var(--line)}.history-item:last-child{border-bottom:0}.history-item b{font-size:14px}.history-item span{font-size:12px;color:var(--muted)}.chart{height:180px;display:flex;align-items:end;gap:9px;padding:10px 2px 20px}.bar{flex:1;min-width:8px;background:linear-gradient(180deg,#06b6d4,#2563eb);border-radius:10px 10px 4px 4px;position:relative}.bar span{position:absolute;bottom:-19px;width:100%;text-align:center;font-size:9px;color:var(--muted)}.plan-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.plan-field{border:1px solid var(--line);border-radius:16px;padding:11px}.plan-field label{font-size:11px;color:var(--muted);font-weight:900}.plan-field input{width:100%;border:0;outline:0;padding:5px 0 0;font-weight:750;background:transparent}.footer{text-align:center;color:var(--muted);font-size:11px;padding:25px}.bottomnav{position:fixed;bottom:0;left:0;right:0;background:#fffdf;z-index:40;padding:8px max(10px,env(safe-area-inset-left)) calc(8px + env(safe-area-inset-bottom));display:none;border-top:1px solid var(--line);box-shadow:0 -12px 35px #07111f0c}.bottomnav-inner{display:flex;max-width:620px;margin:auto;justify-content:space-around}.bn{border:0;background:transparent;color:#8090a5;font-size:10px;font-weight:900;padding:5px 12px}.bn.active{color:#07111f}.bn b{display:block;font-size:18px;margin-bottom:2px}.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#07111f;color:#fff;border-radius:13px;padding:12px 16px;z-index:2000;box-shadow:0 14px 40px #07111f30;font-weight:800;font-size:13px}.leaflet-control-attribution{font-size:9px}
@@ -25,7 +25,6 @@
 <div class="app">
 <header class="top">
     <div class="brand">
-        <!-- SUA LOGO AQUI: -->
         <img class="mark" src="https://images.unsplash.com/photo-1502224562085-639556652f99?w=200&auto=format&fit=crop&q=80" alt="Logo PaceWeek">
         <div><h1>PACEWEEK</h1><p>Seu treino. Seu ritmo. Sua semana.</p></div>
     </div>
@@ -44,8 +43,6 @@
             <div class="section-head">
                 <h3>Planilha do personal</h3>
             </div>
-            
-            <!-- Navegação da Semana para Inserir a Planilha -->
             <div class="weeknav" style="background:#f4f7fb; padding:10px; border-radius:14px; margin-bottom:15px">
                 <button class="iconbtn" onclick="shiftSettingsWeek(-1)">‹</button>
                 <div style="text-align:center">
@@ -54,7 +51,6 @@
                 </div>
                 <button class="iconbtn" onclick="shiftSettingsWeek(1)">›</button>
             </div>
-            
             <div class="plan-grid" id="planForm"></div>
             <div class="quick">
                 <button class="btn blue" onclick="savePlan()">Salvar esta semana</button>
@@ -77,192 +73,240 @@
 </main><div class="footer">PACEWEEK • Seu treino. Seu ritmo. Sua semana. • Mapas © OpenStreetMap contributors</div></div>
 <nav class="bottomnav"><div class="bottomnav-inner"><button class="bn active" data-tab="home"><b>⌂</b>Hoje</button><button class="bn" data-tab="run"><b>⌁</b>Correr</button><button class="bn" data-tab="week"><b>▦</b>Semana</button><button class="bn" data-tab="stats"><b>◒</b>Dados</button><button class="bn" data-tab="settings"><b>⚙</b>Treino</button></div></nav>
 <div id="toast" class="toast hidden"></div>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9coqjD4n7GQ8rR7kM=" crossorigin=""></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script>
-const KEY='paceweek_v3';
-const names=['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
-const short=['DOM','SEG','TER','QUA','QUI','SEX','SÁB'];
-
-let state = JSON.parse(localStorage.getItem(KEY)||'{}');
-// Migração para novo formato (Planilhas por Semana)
-if(!state.weeklyPlans) {
-    state.weeklyPlans = {};
-}
-state.history = state.history || [];
-state.completed = state.completed || {};
-state.goal = state.goal || {pace:'5:45',distance:5};
-state.name = state.name || 'Bruno';
-
-let deferredInstallPrompt=null;
-let weekOffset=0; 
-let settingsWeekOffset=0; // Controle separado para a aba de Configurações
-let map,routeLayer,currentMarker,routePoints=[];
-let run={on:false,paused:false,start:0,elapsed:0,dist:0,last:null,watch:null,watchTimer:null};
-const $=id=>document.getElementById(id);
-
-function save(){localStorage.setItem(KEY,JSON.stringify(state))}
-function toast(s){$('toast').textContent=s;$('toast').classList.remove('hidden');clearTimeout(window._toast);window._toast=setTimeout(()=>$('toast').classList.add('hidden'),2400)}
+// Declaração de funções no escopo global para garantir que os botões (onclick) funcionem sempre
 function showPage(id){
     document.querySelectorAll('.page').forEach(p=>p.classList.toggle('hidden',p.id!==id));
     document.querySelectorAll('.tab,.bn').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));
-    if(id==='run')setTimeout(()=>map&&map.invalidateSize(),100);
-    if(id==='settings') renderSettingsPlan();
-    window.scrollTo({top:0,behavior:'smooth'})
+    if(id==='run')setTimeout(()=>window.map&&window.map.invalidateSize(),100);
+    if(id==='settings' && typeof renderSettingsPlan === 'function') renderSettingsPlan();
+    window.scrollTo({top:0,behavior:'smooth'});
 }
-function openRun(){showPage('run');initMap();setTimeout(()=>startRun(),150)}
+function openRun(){showPage('run');if(typeof initMap==='function')initMap();setTimeout(()=>{if(typeof startRun==='function')startRun()},150)}
 function openMusic(){window.open('https://music.youtube.com/','_blank','noopener,noreferrer')}
-function monday(d){let x=new Date(d);let day=x.getDay();let diff=(day===0?-6:1)-day;x.setDate(x.getDate()+diff);x.setHours(0,0,0,0);return x}
-function iso(d){return new Date(d).toISOString().slice(0,10)}
-function fmtDate(d){return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})}
-function kmFromPlan(s){let m=(s||'').match(/(\d+(?:[\.,]\d+)?)\s*km/i);return m?parseFloat(m[1].replace(',','.')):0}
-function paceFromPlan(s){let m=(s||'').match(/pace\s*(?:de|:)?\s*(\d{1,2}:[0-5]\d)/i);return m?m[1]:'—'}
+function shiftWeek(n){if(typeof appShiftWeek==='function')appShiftWeek(n)}
+function shiftSettingsWeek(n){if(typeof appShiftSettingsWeek==='function')appShiftSettingsWeek(n)}
+function savePlan(){if(typeof appSavePlan==='function')appSavePlan()}
+function clearPlan(){if(typeof appClearPlan==='function')appClearPlan()}
+function centerMap(){if(typeof appCenterMap==='function')appCenterMap()}
+function toggleFullscreen(){let el=document.getElementById('runPanel');if(!document.fullscreenElement){el.requestFullscreen?.();el.classList.add('fullscreen')}else{document.exitFullscreen?.();el.classList.remove('fullscreen')}setTimeout(()=>window.map&&window.map.invalidateSize(),250)}
+function saveGoal(){if(typeof appSaveGoal==='function')appSaveGoal()}
 
-// Lógica de resgatar o plano da semana específica
-function getPlanForDate(dateObj) {
-    let m = iso(monday(dateObj));
-    return state.weeklyPlans[m] || ['Descanso', 'Treino livre', 'Treino livre', 'Treino livre', 'Treino livre', 'Treino livre', 'Treino longo'];
-}
+// Proteção para garantir que erros de histórico não travem a página
+try {
+    const KEY='paceweek_v3';
+    const names=['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+    const short=['DOM','SEG','TER','QUA','QUI','SEX','SÁB'];
 
-function render(){
-    let now=new Date(), dow=now.getDay();
-    let currentWeekPlan = getPlanForDate(now);
-    let planToday = currentWeekPlan[dow] || 'Treino livre';
+    let state = {};
+    try { state = JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e) { state = {}; }
     
-    $('runnerName').value=state.name;
-    $('todayDate').textContent=now.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'});$('todayWorkout').textContent=planToday;
-    $('plannedToday').textContent=planToday;
-    
-    $('todayDistance').textContent=(kmFromPlan(planToday)\vert{}\vert{}state.goal.distance).toFixed(1).replace('.',',')+' km';$('todayPace').textContent=paceFromPlan(planToday)==='—'?state.goal.pace+'/km':paceFromPlan(planToday)+'/km';
-    $('heroKm').textContent=(kmFromPlan(planToday)\vert{}\vert{}state.goal.distance).toFixed(1);$('heroPace').textContent=paceFromPlan(planToday)==='—'?state.goal.pace:paceFromPlan(planToday);
-    
-    let week=monday(now),end=new Date(week);end.setDate(end.getDate()+6);
-    $('weekLabel').textContent=fmtDate(week)+' — '+fmtDate(end);
-    
-    let planned = currentWeekPlan.reduce((a,x)=>a+kmFromPlan(x),0);
-    let wk=state.history.filter(x=>x.iso>=iso(week)&&x.iso<=iso(end));
-    let done=wk.length,real=wk.reduce((a,x)=>a+x.dist,0),avg=wk.length?wk.reduce((a,x)=>a+x.sec/60/x.dist,0)/wk.length:0;
-    
-    $('weekKm').textContent=real.toFixed(1).replace('.',',');$('weekRuns').textContent=done;
-    $('weekTarget').textContent=planned.toFixed(1).replace('.',',');$('weekAvg').textContent=avg?paceMin(avg):'—';
-    $('heroDone').textContent=done;
-    
-    let pct=planned?Math.min(100,real/planned*100):0;
-    $('weekProgress').style.width=pct+'%';
-    $('goalWeek').textContent=Math.round(pct)+'\%';$('todayProgress').style.width=(state.completed[iso(now)]?100:0)+'%';
-    
-    renderCalendar();
-    renderStats();
-    renderGoal();
-    renderSettingsPlan();
-}
+    if(!state || typeof state !== 'object') state = {};
+    if(!state.weeklyPlans) state.weeklyPlans = {};
+    state.history = state.history || [];
+    state.completed = state.completed || {};
+    state.goal = state.goal || {pace:'5:45',distance:5};
+    state.name = state.name || 'Bruno';
 
-function renderCalendar(){
-    let base=monday(new Date());
-    base.setDate(base.getDate()+weekOffset*7);
-    let end=new Date(base);
-    end.setDate(end.getDate()+6);
-    
-    $('calendarLabel').textContent=fmtDate(base)+' — '+fmtDate(end);
-    
-    let weekPlanRender = getPlanForDate(base);
-    let html='';
-    let today=iso(new Date());
-    
-    for(let i=0;i<7;i++){
-        let d=new Date(base);
-        d.setDate(base.getDate()+i);
-        let idx=d.getDay(),k=iso(d),done=state.completed[k];
-        let pForDay = weekPlanRender[idx] || 'Treino livre';
-        
-        html+=`<div class="day ${k===today?'today ':''}${done?'done':''}"><div class="dow">${short[idx]}</div><div class="date">${d.getDate()}</div><div class="type">${esc(pForDay.slice(0,35))}</div><span class="dot"></span></div>`;
+    let weekOffset=0; 
+    let settingsWeekOffset=0; 
+    let routeLayer,currentMarker,routePoints=[];
+    let run={on:false,paused:false,start:0,elapsed:0,dist:0,last:null,watch:null,watchTimer:null};
+    const $=id=>document.getElementById(id);
+
+    function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+    function toast(s){$('toast').textContent=s;$('toast').classList.remove('hidden');clearTimeout(window._toast);window._toast=setTimeout(()=>$('toast').classList.add('hidden'),2400)}
+    function monday(d){let x=new Date(d);let day=x.getDay();let diff=(day===0?-6:1)-day;x.setDate(x.getDate()+diff);x.setHours(0,0,0,0);return x}
+    function iso(d){return new Date(d).toISOString().slice(0,10)}
+    function fmtDate(d){return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})}
+    function kmFromPlan(s){let m=(s||'').match(/(\d+(?:[\.,]\d+)?)\s*km/i);return m?parseFloat(m[1].replace(',','.')):0}
+    function paceFromPlan(s){let m=(s||'').match(/pace\s*(?:de|:)?\s*(\d{1,2}:[0-5]\d)/i);return m?m[1]:'—'}
+
+    function getPlanForDate(dateObj) {
+        let m = iso(monday(dateObj));
+        return state.weeklyPlans[m] || ['Descanso', 'Treino livre', 'Treino livre', 'Treino livre', 'Treino livre', 'Treino livre', 'Treino longo'];
     }
-    $('days').innerHTML=html;
-    
-    let wk=state.history.filter(x=>x.iso>=iso(base)&&x.iso<=iso(end));
-    $('wDone').textContent=wk.length;
-    $('wKm').textContent=wk.reduce((a,x)=>a+x.dist,0).toFixed(1);
-    $('wTarget').textContent=weekPlanRender.reduce((a,x)=>a+kmFromPlan(x),0).toFixed(1);$('wStreak').textContent=streak();
-}
 
-function shiftWeek(n){weekOffset+=n;renderCalendar()}
+    function render(){
+        let now=new Date(), dow=now.getDay();
+        let currentWeekPlan = getPlanForDate(now);
+        let planToday = currentWeekPlan[dow] || 'Treino livre';
+        
+        if($('runnerName'))$('runnerName').value=state.name;
+        if($('todayDate'))$('todayDate').textContent=now.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'});
+        if($('todayWorkout'))$('todayWorkout').textContent=planToday;
+        if($('plannedToday'))$('plannedToday').textContent=planToday;
+        
+        if($('todayDistance'))$('todayDistance').textContent=(kmFromPlan(planToday)||state.goal.distance).toFixed(1).replace('.',',')+' km';
+        if($('todayPace'))$('todayPace').textContent=paceFromPlan(planToday)==='—'?state.goal.pace+'/km':paceFromPlan(planToday)+'/km';
+        if($('heroKm'))$('heroKm').textContent=(kmFromPlan(planToday)||state.goal.distance).toFixed(1);
+        if($('heroPace'))$('heroPace').textContent=paceFromPlan(planToday)==='—'?state.goal.pace:paceFromPlan(planToday);
+        
+        let week=monday(now),end=new Date(week);end.setDate(end.getDate()+6);
+        if($('weekLabel'))$('weekLabel').textContent=fmtDate(week)+' — '+fmtDate(end);
+        
+        let planned = currentWeekPlan.reduce((a,x)=>a+kmFromPlan(x),0);
+        let wk=state.history.filter(x=>x.iso>=iso(week)&&x.iso<=iso(end));
+        let done=wk.length,real=wk.reduce((a,x)=>a+x.dist,0),avg=wk.length?wk.reduce((a,x)=>a+x.sec/60/x.dist,0)/wk.length:0;
+        
+        if($('weekKm'))$('weekKm').textContent=real.toFixed(1).replace('.',',');
+        if($('weekRuns'))$('weekRuns').textContent=done;
+        if($('weekTarget'))$('weekTarget').textContent=planned.toFixed(1).replace('.',',');
+        if($('weekAvg'))$('weekAvg').textContent=avg?paceMin(avg):'—';
+        if($('heroDone'))$('heroDone').textContent=done;
+        
+        let pct=planned?Math.min(100,real/planned*100):0;
+        if($('weekProgress'))$('weekProgress').style.width=pct+'%';
+        if($('goalWeek'))$('goalWeek').textContent=Math.round(pct)+'%';
+        if($('todayProgress'))$('todayProgress').style.width=(state.completed[iso(now)]?100:0)+'%';
+        
+        renderCalendar();
+        renderStats();
+        renderGoal();
+        window.renderSettingsPlan();
+    }
 
-// Funções para a aba "Treino"
-function shiftSettingsWeek(n) {
-    settingsWeekOffset += n;
-    renderSettingsPlan();
-}
+    function renderCalendar(){
+        let base=monday(new Date()); base.setDate(base.getDate()+weekOffset*7);
+        let end=new Date(base); end.setDate(end.getDate()+6);
+        
+        if($('calendarLabel'))$('calendarLabel').textContent=fmtDate(base)+' — '+fmtDate(end);
+        let weekPlanRender = getPlanForDate(base);
+        let html=''; let today=iso(new Date());
+        
+        for(let i=0;i<7;i++){
+            let d=new Date(base); d.setDate(base.getDate()+i);
+            let idx=d.getDay(),k=iso(d),done=state.completed[k];
+            let pForDay = weekPlanRender[idx] || 'Treino livre';
+            html+=`<div class="day ${k===today?'today ':''}${done?'done':''}"><div class="dow">${short[idx]}</div><div class="date">${d.getDate()}</div><div class="type">${esc(pForDay.slice(0,35))}</div><span class="dot"></span></div>`;
+        }
+        if($('days'))$('days').innerHTML=html;
+        
+        let wk=state.history.filter(x=>x.iso>=iso(base)&&x.iso<=iso(end));
+        if($('wDone'))$('wDone').textContent=wk.length;
+        if($('wKm'))$('wKm').textContent=wk.reduce((a,x)=>a+x.dist,0).toFixed(1);
+        if($('wTarget'))$('wTarget').textContent=weekPlanRender.reduce((a,x)=>a+kmFromPlan(x),0).toFixed(1);
+        if($('wStreak'))$('wStreak').textContent=streak();
+    }
 
-function renderSettingsPlan() {
-    let base = monday(new Date());
-    base.setDate(base.getDate() + settingsWeekOffset * 7);
-    let end = new Date(base);
-    end.setDate(end.getDate() + 6);
-    
-    $('settingsWeekLabel').textContent = fmtDate(base) + ' até ' + fmtDate(end);
-    
-    let planToEdit = getPlanForDate(base);
-    
-    $('planForm').innerHTML = names.map((n,i)=>`
-        <div class="plan-field">
-            <label>${n.toUpperCase()}</label>
-            <input id="p${i}" value="${esc(planToEdit[i]||'')}" placeholder="Ex.: 5 km leve — pace 6:00/km">
-        </div>
-    `).join('');
-}
+    window.appShiftWeek = function(n) { weekOffset+=n; renderCalendar(); }
+    window.appShiftSettingsWeek = function(n) { settingsWeekOffset+=n; window.renderSettingsPlan(); }
 
-function savePlan(){
-    let base = monday(new Date());
-    base.setDate(base.getDate() + settingsWeekOffset * 7);
-    let mondayKey = iso(base);
+    window.renderSettingsPlan = function() {
+        let base = monday(new Date()); base.setDate(base.getDate() + settingsWeekOffset * 7);
+        let end = new Date(base); end.setDate(end.getDate() + 6);
+        
+        if($('settingsWeekLabel'))$('settingsWeekLabel').textContent = fmtDate(base) + ' até ' + fmtDate(end);
+        let planToEdit = getPlanForDate(base);
+        
+        if($('planForm'))$('planForm').innerHTML = names.map((n,i)=>`<div class="plan-field"><label>${n.toUpperCase()}</label><input id="p${i}" value="${esc(planToEdit[i]||'')}" placeholder="Ex.: 5 km leve — pace 6:00/km"></div>`).join('');
+    }
+
+    window.appSavePlan = function(){
+        let base = monday(new Date()); base.setDate(base.getDate() + settingsWeekOffset * 7);
+        state.weeklyPlans[iso(base)] = names.map((_,i)=>$(('p'+i)).value.trim());
+        state.name = $('runnerName').value.trim() || 'Bruno';
+        save(); render(); toast('Planilha da semana salva ✓'); showPage('home');
+    }
+
+    window.appClearPlan = function(){
+        let base = monday(new Date()); base.setDate(base.getDate() + settingsWeekOffset * 7);
+        state.weeklyPlans[iso(base)] = ['Descanso','','','','','',''];
+        save(); window.renderSettingsPlan(); render(); toast('Planilha da semana limpa!');
+    }
+
+    function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+    function paceMin(v){let p=Math.floor(v),s=Math.round((v-p)*60);if(s===60){p++;s=0}return p+':'+String(s).padStart(2,'0')}
+    function formatTime(s){s=Math.floor(s);let m=Math.floor(s/60),sec=s%60,h=Math.floor(m/60);m%=60;return h?`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`:`${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`}
     
-    state.weeklyPlans[mondayKey] = names.map((_,i)=>$(('p'+i)).value.trim());
-    state.name=$('runnerName').value.trim()||'Bruno';
+    function renderStats(){
+        let h=state.history.slice(-10).reverse();
+        if($('history'))$('history').innerHTML=h.length?h.map(x=>`<div class="history-item"><div><b>${x.date}</b><br><span>${x.dist.toFixed(2)} km • ${formatTime(x.sec)}</span></div><strong>${paceMin(x.sec/60/x.dist)}/km</strong></div>`).join(''):'<p class="muted">Finalize sua primeira corrida para criar seu histórico.</p>';
+        let vals=h.slice().reverse().map(x=>x.dist),max=Math.max(...vals,1);
+        if($('chart'))$('chart').innerHTML=vals.length?vals.map((v,i)=>`<div class="bar" style="height:${Math.max(12,v/max*145)}px"><span>${v.toFixed(1)}</span></div>`).join(''):'<div class="muted">Sem dados ainda.</div>';
+    }
     
-    save();
+    function renderGoal(){
+        if($('goalPaceView'))$('goalPaceView').textContent=state.goal.pace+'/km';
+        if($('goalDistanceView'))$('goalDistanceView').textContent=Number(state.goal.distance).toFixed(1).replace('.',',')+' km';
+        if($('targetPace'))$('targetPace').value=state.goal.pace;
+        if($('targetDistance'))$('targetDistance').value=state.goal.distance;
+    }
+    
+    window.appSaveGoal = function(){
+        state.goal={pace:$('targetPace').value.trim()\vert{}\vert{}'5:45',distance:parseFloat($('targetDistance').value)||5};
+        save(); render(); toast('Meta salva ✓');
+    }
+    
+    function streak(){let c=0,d=new Date();for(let i=0;i<60;i++){if(state.completed[iso(d)])c++;else if(i>0)break;d.setDate(d.getDate()-1)}return c}
+    
+    window.initMap = function(){
+        if(window.map)return;
+        window.map=L.map('map',{zoomControl:false}).setView([-8.0476,-34.877],14);
+        L.control.zoom({position:'bottomright'}).addTo(window.map);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(window.map);
+        routeLayer=L.polyline([],{color:'#2563eb',weight:6,opacity:.9,lineCap:'round',lineJoin:'round'}).addTo(window.map);
+        currentMarker=L.circleMarker([-8.0476,-34.877],{radius:8,color:'#fff',weight:3,fillColor:'#2563eb',fillOpacity:1}).addTo(window.map);
+    }
+    
+    window.appCenterMap = function(){if(currentMarker)window.map.setView(currentMarker.getLatLng(),17,{animate:true});else window.map.setView([-8.0476,-34.877],14)}
+    
+    window.startRun = function(){
+        if(run.on)return; window.initMap(); run.on=true; run.paused=false; run.start=Date.now(); run.last=null; routePoints=[]; routeLayer.setLatLngs([]);
+        $('startBtn').textContent='● Correndo…'; $('startBtn').disabled=true; $('pauseBtn').disabled=false; $('finishBtn').disabled=false; $('gpsStatus').textContent='GPS ativo';
+        if(!navigator.geolocation){toast('Seu navegador não oferece GPS.');return}
+        run.watch=navigator.geolocation.watchPosition(pos=>{
+            if(run.paused)return; let {latitude,longitude,accuracy}=pos.coords; let p=[latitude,longitude];
+            if(run.last){let d=haversine(run.last[0],run.last[1],latitude,longitude);if(d>0.002&&d<0.15)run.dist+=d}
+            run.last=p; routePoints.push(p); routeLayer.setLatLngs(routePoints); currentMarker.setLatLng(p); window.map.setView(p,17,{animate:true});
+            $('gpsStatus').textContent='GPS • ±'+Math.round(accuracy)+' m';
+        },()=>{
+            $('gpsStatus').textContent='GPS sem sinal'; toast('Permita a localização para registrar o trajeto.');
+        },{enableHighAccuracy:true,maximumAge:1000,timeout:10000});
+        tick();
+    }
+    
+    function tick(){
+        let sec=run.elapsed+(run.on&&!run.paused?(Date.now()-run.start)/1000:0);
+        $('timer').textContent=formatTime(sec); $('distance').textContent=run.dist.toFixed(2);$('pace').textContent=run.dist?paceMin(sec/60/run.dist):'0:00';
+        if(run.on)run.watchTimer=setTimeout(tick,500);
+    }
+    
+    window.pauseRun = function(){
+        if(!run.on)return;
+        if(!run.paused){ run.elapsed+=(Date.now()-run.start)/1000; run.paused=true; $('pauseBtn').textContent='▶ Continuar'; $('gpsStatus').textContent='Pausado'; }
+        else { run.start=Date.now(); run.paused=false; $('pauseBtn').textContent='⏸ Pausar'; $('gpsStatus').textContent='GPS ativo'; }
+        tick();
+    }
+    
+    window.finishRun = function(){
+        if(!run.on)return; if(!run.paused)run.elapsed+=(Date.now()-run.start)/1000;
+        run.on=false; clearTimeout(run.watchTimer); if(run.watch!=null)navigator.geolocation.clearWatch(run.watch);
+        let sec=run.elapsed,now=new Date(); state.history.push({iso:iso(now),date:now.toLocaleDateString('pt-BR'),sec,dist:run.dist,route:routePoints}); state.completed[iso(now)]=true;
+        save(); $('startBtn').disabled=false; $('startBtn').textContent='▶ Iniciar'; $('pauseBtn').disabled=true; $('finishBtn').disabled=true; $('pauseBtn').textContent='⏸ Pausar'; $('gpsStatus').textContent='Treino salvo';
+        render(); toast(`Corrida salva • ${run.dist.toFixed(2)} km`); run={on:false,paused:false,start:0,elapsed:0,dist:0,last:null,watch:null,watchTimer:null};
+    }
+    
+    function haversine(a,b,c,d){const R=6371,x=(c-a)*Math.PI/180,y=(d-b)*Math.PI/180,z=Math.sin(x/2)**2+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(y/2)**2;return R*2*Math.atan2(Math.sqrt(z),Math.sqrt(1-z))}
+    
+    // Liga todos os eventos de clique nas abas
+    document.querySelectorAll('.tab, .bn').forEach(b => b.addEventListener('click', () => showPage(b.dataset.tab)));
+    if($('startBtn'))$('startBtn').onclick = window.startRun;
+    if($('pauseBtn'))$('pauseBtn').onclick = window.pauseRun;
+    if($('finishBtn'))$('finishBtn').onclick = window.finishRun;
+    if($('runnerName')) $('runnerName').addEventListener('change', () => { state.name =$('runnerName').value.trim() || 'Bruno'; save(); render(); });
+
     render();
-    toast('Planilha da semana salva ✓');
-    showPage('home');
+
+} catch (error) {
+    console.error("Erro no PaceWeek:", error);
 }
-
-function clearPlan(){
-    let base = monday(new Date());
-    base.setDate(base.getDate() + settingsWeekOffset * 7);
-    let mondayKey = iso(base);
-    
-    state.weeklyPlans[mondayKey] = ['Descanso','','','','','',''];
-    save();
-    renderSettingsPlan();
-    render();
-    toast('Planilha da semana limpa!');
-}
-
-function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
-function paceMin(v){let p=Math.floor(v),s=Math.round((v-p)*60);if(s===60){p++;s=0}return p+':'+String(s).padStart(2,'0')}
-function formatTime(s){s=Math.floor(s);let m=Math.floor(s/60),sec=s%60,h=Math.floor(m/60);m%=60;return h?`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`:`${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`}
-function renderStats(){let h=state.history.slice(-10).reverse();$('history').innerHTML=h.length?h.map(x=>`<div class="history-item"><div><b>${x.date}</b><br><span>${x.dist.toFixed(2)} km • ${formatTime(x.sec)}</span></div><strong>${paceMin(x.sec/60/x.dist)}/km</strong></div>`).join(''):'<p class="muted">Finalize sua primeira corrida para criar seu histórico.</p>';let vals=h.slice().reverse().map(x=>x.dist),max=Math.max(...vals,1);$('chart').innerHTML=vals.length?vals.map((v,i)=>`<div class="bar" style="height:${Math.max(12,v/max*145)}px"><span>${v.toFixed(1)}</span></div>`).join(''):'<div class="muted">Sem dados ainda.</div>'}
-function renderGoal(){$('goalPaceView').textContent=state.goal.pace+'/km';$('goalDistanceView').textContent=Number(state.goal.distance).toFixed(1).replace('.',',')+' km';$('targetPace').value=state.goal.pace;$('targetDistance').value=state.goal.distance}
-function saveGoal(){state.goal={pace:$('targetPace').value.trim()\vert{}\vert{}'5:45',distance:parseFloat($('targetDistance').value)||5};save();render();toast('Meta salva ✓')}
-function streak(){let c=0,d=new Date();for(let i=0;i<60;i++){if(state.completed[iso(d)])c++;else if(i>0)break;d.setDate(d.getDate()-1)}return c}
-function initMap(){if(map)return;map=L.map('map',{zoomControl:false}).setView([-8.0476,-34.877],14);L.control.zoom({position:'bottomright'}).addTo(map);L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(map);routeLayer=L.polyline([],{color:'#2563eb',weight:6,opacity:.9,lineCap:'round',lineJoin:'round'}).addTo(map);currentMarker=L.circleMarker([-8.0476,-34.877],{radius:8,color:'#fff',weight:3,fillColor:'#2563eb',fillOpacity:1}).addTo(map);map.on('locationfound',e=>{});}
-function centerMap(){if(currentMarker)map.setView(currentMarker.getLatLng(),17,{animate:true});else map.setView([-8.0476,-34.877],14)}
-function startRun(){if(run.on)return;initMap();run.on=true;run.paused=false;run.start=Date.now();run.last=null;routePoints=[];routeLayer.setLatLngs([]);$('startBtn').textContent='● Correndo…';$('startBtn').disabled=true;$('pauseBtn').disabled=false;$('finishBtn').disabled=false;$('gpsStatus').textContent='GPS ativo';if(!navigator.geolocation){toast('Seu navegador não oferece GPS.');return}run.watch=navigator.geolocation.watchPosition(pos=>{if(run.paused)return;let {latitude,longitude,accuracy}=pos.coords;let p=[latitude,longitude];if(run.last){let d=haversine(run.last[0],run.last[1],latitude,longitude);if(d>0.002&&d<0.15)run.dist+=d}run.last=p;routePoints.push(p);routeLayer.setLatLngs(routePoints);currentMarker.setLatLng(p);map.setView(p,17,{animate:true});$('gpsStatus').textContent='GPS • ±'+Math.round(accuracy)+' m'},()=>{$('gpsStatus').textContent='GPS sem sinal';toast('Permita a localização para registrar o trajeto.')},{enableHighAccuracy:true,maximumAge:1000,timeout:10000});tick()}
-function tick(){let sec=run.elapsed+(run.on&&!run.paused?(Date.now()-run.start)/1000:0);$('timer').textContent=formatTime(sec);$('distance').textContent=run.dist.toFixed(2);$('pace').textContent=run.dist?paceMin(sec/60/run.dist):'0:00';if(run.on)run.watchTimer=setTimeout(tick,500)}
-function pauseRun(){if(!run.on)return;if(!run.paused){run.elapsed+=(Date.now()-run.start)/1000;run.paused=true;$('pauseBtn').textContent='▶ Continuar';$('gpsStatus').textContent='Pausado'}else{run.start=Date.now();run.paused=false;$('pauseBtn').textContent='⏸ Pausar';$('gpsStatus').textContent='GPS ativo'}tick()}
-function finishRun(){if(!run.on)return;if(!run.paused)run.elapsed+=(Date.now()-run.start)/1000;run.on=false;clearTimeout(run.watchTimer);if(run.watch!=null)navigator.geolocation.clearWatch(run.watch);let sec=run.elapsed,now=new Date();state.history.push({iso:iso(now),date:now.toLocaleDateString('pt-BR'),sec,dist:run.dist,route:routePoints});state.completed[iso(now)]=true;save();$('startBtn').disabled=false;$('startBtn').textContent='▶ Iniciar';$('pauseBtn').disabled=true;$('finishBtn').disabled=true;$('pauseBtn').textContent='⏸ Pausar';$('gpsStatus').textContent='Treino salvo';render();toast(`Corrida salva • ${run.dist.toFixed(2)} km`);run={on:false,paused:false,start:0,elapsed:0,dist:0,last:null,watch:null,watchTimer:null}}
-function haversine(a,b,c,d){const R=6371,x=(c-a)*Math.PI/180,y=(d-b)*Math.PI/180,z=Math.sin(x/2)**2+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(y/2)**2;return R*2*Math.atan2(Math.sqrt(z),Math.sqrt(1-z))}
-function toggleFullscreen(){let el=$('runPanel');if(!document.fullscreenElement){el.requestFullscreen?.();el.classList.add('fullscreen')}else{document.exitFullscreen?.();el.classList.remove('fullscreen')}setTimeout(()=>map&&map.invalidateSize(),250)}
-[...document.querySelectorAll('.tab,.bn')].forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.tab)));
-$('startBtn').onclick=startRun;$('pauseBtn').onclick=pauseRun;$('finishBtn').onclick=finishRun;$('runnerName').addEventListener('change',()=>{state.name=$('runnerName').value.trim()||'Bruno';save();render()});
-
-render();
 
 // PWA Service Worker Registration
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
 }
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault(); deferredInstallPrompt=e; $('installBtn').classList.remove('hidden');
-});
 </script>
 </body>
 </html>

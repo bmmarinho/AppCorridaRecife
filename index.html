@@ -3,15 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RecifeRun - Meus Treinos de Corrida</title>
-    <!-- Ícone para Atalho no Celular -->
-    <link rel="apple-touch-icon" href="https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=192&h=192&fit=crop">
+    <title>PaceWeek - Meus Treinos de Corrida</title>
+    
+    <!-- Configurações PWA (Progressive Web App) -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="PaceWeek">
+    <link rel="apple-touch-icon" href="https://images.unsplash.com/photo-1502224562085-639556652f99?w=192&h=192&fit=crop">
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome para ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Leaflet CSS para Mapas -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <!-- Chart.js para Gráficos de Performance -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -20,64 +25,52 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0; padding: 0; width: 100vw; min-height: 100vh;
         }
-        .bg-recife-runner {
-            background-image: linear-gradient(rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.95)), url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=');
+        .bg-pace-runner {
+            background-image: linear-gradient(rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.95)), url('https://images.unsplash.com/photo-1502224562085-639556652f99?w=1200&auto=format&fit=crop&q=80');
             background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed;
         }
-        #mapaGPS { height: 220px; width: 100%; border-radius: 1rem; z-index: 10; }
     </style>
 </head>
-<body class="bg-recife-runner text-slate-100 flex flex-col min-h-screen pb-20">
+<body class="bg-pace-runner text-slate-100 flex flex-col min-h-screen pb-20">
 
-    <!-- Header Fixo com Logo Moderna RecifeRun -->
-    <header class="w-full bg-slate-900/90 backdrop-blur-md border-b border-slate-700/60 px-4 py-3 sticky top-0 z-30 shadow-md">
+    <!-- Header Fixo com a Logo Oficial -->
+    <header class="w-full bg-slate-900/90 backdrop-blur-md border-b border-slate-700/60 px-4 py-2.5 sticky top-0 z-30 shadow-md">
         <div class="w-full max-w-lg mx-auto flex justify-between items-center">
             
-            <!-- LOGO NOVA -->
+            <!-- LOGO OFICIAL PACEWEEK -->
             <div class="flex items-center gap-2.5">
-                <svg class="w-8 h-8" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="36" height="36" rx="10" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
-                    <path d="M10 24L16 12L22 20L26 14" stroke="url(#logo_grad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                    <circle cx="26" cy="14" r="2.5" fill="#10B981"/>
-                    <defs>
-                        <linearGradient id="logo_grad" x1="10" y1="12" x2="26" y2="24" gradientUnits="userSpaceOnUse">
-                            <stop stop-color="#34D399"/>
-                            <stop offset="1" stop-color="#059669"/>
-                        </linearGradient>
-                    </defs>
-                </svg>
+                <div class="w-9 h-9 rounded-xl overflow-hidden border border-slate-700 shadow-md bg-slate-950 flex items-center justify-center">
+                    <img src="https://images.unsplash.com/photo-1502224562085-639556652f99?w=100&auto=format&fit=crop&q=80" alt="PaceWeek Logo" class="w-full h-full object-cover scale-125">
+                </div>
                 <div class="flex flex-col">
-                    <span class="font-bold text-sm tracking-tight text-slate-100 leading-tight">Recife<span class="text-emerald-400">Run</span></span>
-                    <span class="text-[10px] text-slate-400 font-medium leading-none">Meus Treinos</span>
+                    <span class="font-bold text-sm tracking-tight text-slate-100 leading-tight">Pace<span class="text-emerald-400">Week</span></span>
+                    <span class="text-[10px] text-slate-400 font-medium leading-none">Painel de Treinos</span>
                 </div>
             </div>
 
-            <!-- Botões do Topo -->
-            <div class="flex gap-2">
-                <button onclick="abrirModalSemana()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-2.5 py-2 rounded-lg shadow transition flex items-center gap-1">
-                    <i class="fa-solid fa-calendar-plus"></i> Semana
+            <!-- Botão de Inserir Planilha Semanal -->
+            <div>
+                <button onclick="abrirModalSemana()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-3 py-2 rounded-xl shadow transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-calendar-plus"></i> Nova Semana
                 </button>
-                <a href="https://music.youtube.com" target="_blank" class="bg-red-600 hover:bg-red-500 text-white text-xs font-semibold px-2.5 py-2 rounded-lg shadow transition flex items-center gap-1" title="Abrir YouTube Music">
-                    <i class="fa-brands fa-youtube"></i> Som
-                </a>
             </div>
         </div>
     </header>
 
     <!-- Navegação por Abas -->
     <nav class="w-full max-w-lg mx-auto px-4 pt-3">
-        <div class="grid grid-cols-3 bg-slate-900/80 p-1 rounded-xl border border-slate-700/60 text-xs font-bold text-center">
-            <button onclick="mudarAba('treinos')" id="btnTabTreinos" class="py-2 rounded-lg bg-emerald-600 text-white transition shadow">Planilha & Agenda</button>
-            <button onclick="mudarAba('gps')" id="btnTabGPS" class="py-2 rounded-lg text-slate-400 hover:text-white transition">GPS & Corrida</button>
-            <button onclick="mudarAba('graficos')" id="btnTabGraficos" class="py-2 rounded-lg text-slate-400 hover:text-white transition">Performance</button>
+        <div class="grid grid-cols-2 bg-slate-900/80 p-1 rounded-xl border border-slate-700/60 text-xs font-bold text-center">
+            <button onclick="mudarAba('treinos')" id="btnTabTreinos" class="py-2.5 rounded-lg bg-emerald-600 text-white transition shadow">Planilha & Agenda</button>
+            <button onclick="mudarAba('graficos')" id="btnTabGraficos" class="py-2.5 rounded-lg text-slate-400 hover:text-white transition">Painel de Desempenho</button>
         </div>
     </nav>
 
     <!-- Main Content -->
     <main class="w-full max-w-lg mx-auto p-4 flex-1 flex flex-col gap-4">
 
-        <!-- ABA 1: TREINOS E CALENDÁRIO -->
+        <!-- ABA 1: PLANILHA, CALENDÁRIO E RESUMO DA SEMANA -->
         <section id="abaTreinos" class="flex flex-col gap-4">
+            <!-- Calendário Mensal -->
             <div class="w-full bg-slate-900/85 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-slate-700/60">
                 <div class="flex justify-between items-center mb-3">
                     <button onclick="mudarMes(-1)" class="p-2 text-slate-400 hover:text-white transition"><i class="fa-solid fa-chevron-left"></i></button>
@@ -90,55 +83,34 @@
                 <div id="gradeDias" class="grid grid-cols-7 gap-1.5 text-center text-xs"></div>
             </div>
 
+            <!-- Lista de Treinos da Semana -->
             <div class="w-full bg-slate-900/85 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-slate-700/60">
                 <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3 flex items-center gap-2">
-                    <i class="fa-solid fa-list-check text-emerald-400"></i> Próximos Treinos da Semana
+                    <i class="fa-solid fa-list-check text-emerald-400"></i> Treinos Próximos e Semanais
                 </h3>
                 <div id="resumoSemanaLista" class="space-y-2 text-xs"></div>
             </div>
         </section>
 
-        <!-- ABA 2: GPS E RASTREIO DE CORRIDA -->
-        <section id="abaGPS" class="hidden flex flex-col gap-4">
-            <div class="w-full bg-slate-900/85 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-slate-700/60 flex flex-col gap-3">
-                <h3 class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-2">
-                    <i class="fa-solid fa-location-crosshairs"></i> Rastreamento de Percurso (GPS)
-                </h3>
-                <div id="mapaGPS"></div>
-                
-                <div class="grid grid-cols-3 gap-2 text-center py-2 bg-slate-950/60 rounded-xl border border-slate-800">
-                    <div>
-                        <span class="block text-[10px] text-slate-400 uppercase">Distância</span>
-                        <span id="gpsDistancia" class="text-base font-bold text-emerald-400">0.00 km</span>
-                    </div>
-                    <div>
-                        <span class="block text-[10px] text-slate-400 uppercase">Tempo</span>
-                        <span id="gpsTempo" class="text-base font-bold text-emerald-400">00:00</span>
-                    </div>
-                    <div>
-                        <span class="block text-[10px] text-slate-400 uppercase">Pace Médio</span>
-                        <span id="gpsPace" class="text-base font-bold text-emerald-400">0:00</span>
-                    </div>
-                </div>
-
-                <div class="flex gap-2 pt-1">
-                    <button onclick="iniciarCorridaGPS()" id="btnIniciarGPS" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 rounded-xl shadow text-xs transition">Iniciar Corrida</button>
-                    <button onclick="pausarCorridaGPS()" id="btnPausarGPS" class="flex-1 bg-amber-600 hover:bg-amber-500 text-white font-semibold py-3 rounded-xl shadow text-xs transition hidden">Pausar</button>
-                    <button onclick="pararCorridaGPS()" id="btnPararGPS" class="bg-red-600 hover:bg-red-500 text-white font-semibold px-4 py-3 rounded-xl shadow text-xs transition hidden"><i class="fa-solid fa-stop"></i></button>
-                </div>
-            </div>
-        </section>
-
-        <!-- ABA 3: GRÁFICOS DE PERFORMANCE -->
+        <!-- ABA 2: PAINEL DE DESEMPENHO E GRÁFICOS -->
         <section id="abaGraficos" class="hidden flex flex-col gap-4">
             <div class="w-full bg-slate-900/85 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-slate-700/60 flex flex-col gap-3">
                 <h3 class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-2">
-                    <i class="fa-solid fa-chart-line"></i> Evolução de Desempenho
+                    <i class="fa-solid fa-chart-line"></i> Evolução de Pace (Ritmo)
                 </h3>
-                <p class="text-[11px] text-slate-400">Acompanhe o seu ritmo e os resultados salvos nos treinos concluídos.</p>
-                
+                <p class="text-[11px] text-slate-400">Acompanhe a sua melhora de ritmo minuto a minuto nos treinos concluídos.</p>
                 <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800">
                     <canvas id="graficoPace"></canvas>
+                </div>
+            </div>
+
+            <div class="w-full bg-slate-900/85 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-slate-700/60 flex flex-col gap-3">
+                <h3 class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-stopwatch"></i> Histórico de Tempos Totais
+                </h3>
+                <p class="text-[11px] text-slate-400">Duração total registrada em cada treino finalizado.</p>
+                <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800">
+                    <canvas id="graficoTempo"></canvas>
                 </div>
             </div>
         </section>
@@ -155,8 +127,8 @@
             <input type="hidden" id="modalDataId">
             <div class="space-y-3">
                 <div>
-                    <label class="block text-[11px] font-semibold text-slate-400 uppercase mb-1">Descrição do Treino</label>
-                    <textarea id="modalDescricao" rows="3" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-xs text-slate-100 focus:outline-none focus:border-emerald-500"></textarea>
+                    <label class="block text-[11px] font-semibold text-slate-400 uppercase mb-1">Descrição do Treino (do Personal)</label>
+                    <textarea id="modalDescricao" rows="3" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-xs text-slate-100 focus:outline-none focus:border-emerald-500" placeholder="Ex: 1km aq + 5x200m + 5x100m"></textarea>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
@@ -169,8 +141,8 @@
                     </div>
                 </div>
                 <div>
-                    <label class="block text-[11px] font-semibold text-slate-400 uppercase mb-1">Observações / Sensações</label>
-                    <input type="text" id="modalObs" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-xs text-slate-100" placeholder="Ex: Joelho ótimo, ritmo forte">
+                    <label class="block text-[11px] font-semibold text-slate-400 uppercase mb-1">Sensações / Observações</label>
+                    <input type="text" id="modalObs" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-xs text-slate-100" placeholder="Ex: Ritmo forte, joelho ótimo">
                 </div>
                 <div class="flex items-center gap-3 py-2">
                     <input type="checkbox" id="modalConcluido" class="w-5 h-5 accent-emerald-500 rounded cursor-pointer">
@@ -184,22 +156,22 @@
         </div>
     </div>
 
-    <!-- Modal de Inserir Planilha Semanal -->
+    <!-- Modal de Inserir Planilha Semanal Rápida -->
     <div id="modalSemana" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 hidden items-end sm:items-center justify-center p-0 sm:p-4">
         <div class="bg-slate-900 border border-slate-700 w-full max-w-lg rounded-t-3xl sm:rounded-2xl p-5 shadow-2xl max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-3">
                 <h3 class="font-bold text-base text-emerald-400">📋 Inserir Planilha da Semana</h3>
                 <button onclick="fecharModalSemana()" class="text-slate-400 hover:text-white p-2"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-            <p class="text-xs text-slate-400 mb-3">Cole ou digite os treinos enviados pelo personal para esta semana:</p>
+            <p class="text-xs text-slate-400 mb-3">Insira os treinos enviados pelo personal para esta semana:</p>
             <div class="space-y-2.5">
                 <div><label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Segunda-feira</label><input type="text" id="semSeg" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-100" placeholder="Ex: Descanso"></div>
-                <div><label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Terça-feira</label><input type="text" id="semTer" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-100" placeholder="Ex: 1km aq + 5x200m + 5x100m"></div>
+                <div><label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Terça-feira (Tiros/Intenso)</label><input type="text" id="semTer" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-100" placeholder="Ex: 1km aq + 5x200m + 5x100m"></div>
                 <div><label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Quarta-feira</label><input type="text" id="semQua" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-100" placeholder="Ex: Descanso"></div>
-                <div><label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Quinta-feira</label><input type="text" id="semQui" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-100" placeholder="Ex: 1,5km aq + 5x250m + 5x100m"></div>
+                <div><label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Quinta-feira (Tiros/Intenso)</label><input type="text" id="semQui" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-100" placeholder="Ex: 1,5km aq + 5x250m"></div>
                 <div><label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Sexta-feira</label><input type="text" id="semSex" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-100" placeholder="Ex: Descanso"></div>
                 <div><label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Sábado</label><input type="text" id="semSab" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-100" placeholder="Ex: Livre"></div>
-                <div><label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Domingo</label><input type="text" id="semDom" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-100" placeholder="Ex: 5km entre 30-40 min"></div>
+                <div><label class="block text-[11px] font-bold text-slate-300 uppercase mb-1">Domingo (Longo)</label><input type="text" id="semDom" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-100" placeholder="Ex: 5km entre 30-40 min"></div>
                 <div class="flex gap-3 pt-3">
                     <button onclick="salvarPlanilhaSemanal()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 rounded-xl shadow text-xs">Salvar Planilha</button>
                     <button onclick="fecharModalSemana()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold px-4 py-3 rounded-xl text-xs">Cancelar</button>
@@ -208,138 +180,73 @@
         </div>
     </div>
 
-    <!-- Leaflet JS para Mapas -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- Script de Funcionamento -->
+    <!-- Script de Funcionamento e Registro do PWA Service Worker -->
     <script>
-        let dataAtual = new Date();
-        let treinos = JSON.parse(localStorage.getItem('meus_treinos_corrida')) || {};
-        let graficoPaceInstance = null;
+        // Registrar PWA Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Service Worker registrado com sucesso!', reg))
+                    .catch(err => console.log('Erro ao registrar Service Worker:', err));
+            });
+        }
 
-        // Inicializar com treino de exemplo se vazio
+        let dataAtual = new Date();
+        let treinos = JSON.parse(localStorage.getItem('pace_week_treinos')) || {};
+        let graficoPaceInstance = null, graficoTempoInstance = null;
+
         if (Object.keys(treinos).length === 0) {
             const hojeStr = new Date().toISOString().split('T')[0];
             treinos[hojeStr] = { descricao: "Terça: 1km aq + 5x200m + 5x100m", tempo: "24:00", pace: "5:30", obs: "Bom ritmo", concluido: true };
-            localStorage.setItem('meus_treinos_corrida', JSON.stringify(treinos));
+            localStorage.setItem('pace_week_treinos', JSON.stringify(treinos));
         }
 
         function mudarAba(aba) {
             document.getElementById('abaTreinos').classList.add('hidden');
-            document.getElementById('abaGPS').classList.add('hidden');
             document.getElementById('abaGraficos').classList.add('hidden');
 
-            document.getElementById('btnTabTreinos').className = "py-2 rounded-lg text-slate-400 hover:text-white transition";
-            document.getElementById('btnTabGPS').className = "py-2 rounded-lg text-slate-400 hover:text-white transition";
-            document.getElementById('btnTabGraficos').className = "py-2 rounded-lg text-slate-400 hover:text-white transition";
+            document.getElementById('btnTabTreinos').className = "py-2.5 rounded-lg text-slate-400 hover:text-white transition";
+            document.getElementById('btnTabGraficos').className = "py-2.5 rounded-lg text-slate-400 hover:text-white transition";
 
             if (aba === 'treinos') {
                 document.getElementById('abaTreinos').classList.remove('hidden');
-                document.getElementById('btnTabTreinos').className = "py-2 rounded-lg bg-emerald-600 text-white transition shadow";
-            } else if (aba === 'gps') {
-                document.getElementById('abaGPS').classList.remove('hidden');
-                document.getElementById('btnTabGPS').className = "py-2 rounded-lg bg-emerald-600 text-white transition shadow";
-                setTimeout(() => { if (mapa) mapa.invalidateSize(); }, 200);
+                document.getElementById('btnTabTreinos').className = "py-2.5 rounded-lg bg-emerald-600 text-white transition shadow";
             } else if (aba === 'graficos') {
                 document.getElementById('abaGraficos').classList.remove('hidden');
-                document.getElementById('btnTabGraficos').className = "py-2 rounded-lg bg-emerald-600 text-white transition shadow";
+                document.getElementById('btnTabGraficos').className = "py-2.5 rounded-lg bg-emerald-600 text-white transition shadow";
                 renderizarGraficos();
             }
         }
 
-        // Variáveis de GPS
-        let mapa, watchID, coordenadasPercurso = [], distanciaTotalM = 0, tempoSegundos = 0, timerGPS = null, correndoGPS = false;
-
-        function inicializarMapa() {
-            if (mapa) return;
-            mapa = L.map('mapaGPS').setView([-8.0476, -34.8770], 14); // Padrão Recife
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '© OpenStreetMap'
-            }).addTo(mapa);
-        }
-        setTimeout(inicializarMapa, 500);
-
-        function calcularDistancia(lat1, lon1, lat2, lon2) {
-            const R = 6371e3;
-            const φ1 = lat1 * Math.PI/180, φ2 = lat2 * Math.PI/180;
-            const Δφ = (lat2-lat1) * Math.PI/180, Δλ = (lon2-lon1) * Math.PI/180;
-            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-            return R * c;
-        }
-
-        function iniciarCorridaGPS() {
-            if (!navigator.geolocation) { alert('GPS não suportado neste aparelho.'); return; }
-            correndoGPS = true;
-            document.getElementById('btnIniciarGPS').classList.add('hidden');
-            document.getElementById('btnPausarGPS').classList.remove('hidden');
-            document.getElementById('btnPararGPS').classList.remove('hidden');
-
-            timerGPS = setInterval(() => {
-                tempoSegundos++;
-                let min = Math.floor(tempoSegundos / 60), sec = tempoSegundos % 60;
-                document.getElementById('gpsTempo').innerText = `${String(min).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
-                
-                if (distanciaTotalM > 0) {
-                    let paceSec = (tempoSegundos / (distanciaTotalM / 1000));
-                    let pMin = Math.floor(paceSec / 60), pSec = Math.floor(paceSec % 60);
-                    document.getElementById('gpsPace').innerText = `${pMin}:${String(pSec).padStart(2,'0')}`;
-                }
-            }, 1000);
-
-            watchID = navigator.geolocation.watchPosition(pos => {
-                const lat = pos.coords.latitude, lon = pos.coords.longitude;
-                const novaCoord = [lat, lon];
-                if (coordenadasPercurso.length > 0) {
-                    let ultima = coordenadasPercurso[coordenadasPercurso.length - 1];
-                    let dist = calcularDistancia(ultima[0], ultima[1], lat, lon);
-                    if (dist > 3) { distanciaTotalM += dist; }
-                }
-                coordenadasPercurso.push(novaCoord);
-                mapa.setView(novaCoord, 16);
-                L.polyline(coordenadasPercurso, { color: '#10b981', weight: 4 }).addTo(mapa);
-                document.getElementById('gpsDistancia').innerText = `${(distanciaTotalM / 1000).toFixed(2)} km`;
-            }, err => console.error(err), { enableHighAccuracy: true });
-        }
-
-        function pausarCorridaGPS() {
-            correndoGPS = false;
-            clearInterval(timerGPS);
-            navigator.geolocation.clearWatch(watchID);
-            document.getElementById('btnPausarGPS').classList.add('hidden');
-            document.getElementById('btnIniciarGPS').classList.remove('hidden');
-            document.getElementById('btnIniciarGPS').innerText = "Retomar";
-        }
-
-        function pararCorridaGPS() {
-            pausarCorridaGPS();
-            alert(`Corrida finalizada! Distância: ${(distanciaTotalM/1000).toFixed(2)}km em ${document.getElementById('gpsTempo').innerText}`);
-            distanciaTotalM = 0; tempoSegundos = 0; coordenadasPercurso = [];
-            document.getElementById('gpsDistancia').innerText = "0.00 km";
-            document.getElementById('gpsTempo').innerText = "00:00";
-            document.getElementById('gpsPace').innerText = "0:00";
-            document.getElementById('btnPararGPS').classList.add('hidden');
-            document.getElementById('btnIniciarGPS').innerText = "Iniciar Corrida";
-        }
-
-        // Gráficos Chart.js
         function renderizarGraficos() {
-            const ctx = document.getElementById('graficoPace').getContext('2d');
-            let datas = [], paces = [];
+            let datas = [], paces = [], tempos = [];
 
             Object.keys(treinos).sort().forEach(dataStr => {
                 let t = treinos[dataStr];
-                if (t.concluido && t.pace) {
+                if (t.concluido && (t.pace || t.tempo)) {
                     datas.push(dataStr.split('-').reverse().join('/'));
-                    let partes = t.pace.replace(' min/km','').split(':');
-                    let minDec = parseInt(partes[0]) + (partes[1] ? parseInt(partes[1])/60 : 0);
-                    paces.push(minDec.toFixed(2));
+                    
+                    if (t.pace) {
+                        let partes = t.pace.replace(' min/km','').split(':');
+                        let minDec = parseInt(partes[0]) + (partes[1] ? parseInt(partes[1])/60 : 0);
+                        paces.push(minDec.toFixed(2));
+                    } else {
+                        paces.push(0);
+                    }
+
+                    if (t.tempo) {
+                        let partesT = t.tempo.split(':');
+                        let minT = parseInt(partesT[0]) + (partesT[1] ? parseInt(partesT[1])/60 : 0);
+                        tempos.push(minT.toFixed(1));
+                    } else {
+                        tempos.push(0);
+                    }
                 }
             });
 
+            const ctxPace = document.getElementById('graficoPace').getContext('2d');
             if (graficoPaceInstance) graficoPaceInstance.destroy();
-
-            graficoPaceInstance = new Chart(ctx, {
+            graficoPaceInstance = new Chart(ctxPace, {
                 type: 'line',
                 data: {
                     labels: datas.length ? datas : ['Sem dados'],
@@ -348,7 +255,7 @@
                         data: paces.length ? paces : [0],
                         borderColor: '#10b981',
                         backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                        borderWidth: 2,
+                        borderWidth: 2.5,
                         tension: 0.3,
                         fill: true
                     }]
@@ -362,9 +269,33 @@
                     plugins: { legend: { labels: { color: '#f8fafc', font: { size: 10 } } } }
                 }
             });
+
+            const ctxTempo = document.getElementById('graficoTempo').getContext('2d');
+            if (graficoTempoInstance) graficoTempoInstance.destroy();
+            graficoTempoInstance = new Chart(ctxTempo, {
+                type: 'bar',
+                data: {
+                    labels: datas.length ? datas : ['Sem dados'],
+                    datasets: [{
+                        label: 'Tempo Total (minutos)',
+                        data: tempos.length ? tempos : [0],
+                        backgroundColor: 'rgba(52, 211, 153, 0.7)',
+                        borderColor: '#10b981',
+                        borderWidth: 1,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
+                        x: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }
+                    },
+                    plugins: { legend: { labels: { color: '#f8fafc', font: { size: 10 } } } }
+                }
+            });
         }
 
-        // Funções de Calendário
         function formatarDataKey(date) {
             return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
         }
@@ -439,7 +370,7 @@
             if (!descricao && !tempo && !pace) delete treinos[dataStr];
             else treinos[dataStr] = { descricao, tempo, pace, obs, concluido };
 
-            localStorage.setItem('meus_treinos_corrida', JSON.stringify(treinos));
+            localStorage.setItem('pace_week_treinos', JSON.stringify(treinos));
             fecharModal(); renderizarApp();
         }
 
@@ -458,8 +389,8 @@
                     else treinos[ds].descricao = val;
                 }
             });
-            localStorage.setItem('meus_treinos_corrida', JSON.stringify(treinos));
-            fecharModalSemana(); renderizarApp(); alert('Planilha salva com sucesso!');
+            localStorage.setItem('pace_week_treinos', JSON.stringify(treinos));
+            fecharModalSemana(); renderizarApp(); alert('Planilha semanal salva com sucesso!');
         }
 
         function renderizarResumoSemana() {
